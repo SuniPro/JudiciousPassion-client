@@ -1,10 +1,12 @@
 import "@emotion/react";
 import { Theme as MuiTheme } from "@mui/material/styles";
 import {
+  BorderRadiusTypes,
   ColorTypes,
   FontSizeTypes,
   FontTypes,
   IslandBlueThemeType,
+  ShadowStylesTypes,
   WindowSizeTypes,
 } from "./theme";
 
@@ -15,5 +17,7 @@ declare module "@emotion/react" {
     fontStyle: FontTypes;
     fontSize: FontSizeTypes;
     islandBlueTheme: IslandBlueThemeType;
+    shadowStyle: ShadowStylesTypes;
+    borderRadius: BorderRadiusTypes;
   }
 }
