@@ -1,4 +1,8 @@
-import { PageContainer } from "../components/Layouts/Layouts";
+/** @jsxImportSource @emotion/react */
+import {
+  ContentsAreaContainer,
+  PageContainer,
+} from "../components/Layouts/Layouts";
 import { Taste } from "./Taste";
 import styled from "@emotion/styled";
 import FlatwareIcon from "@mui/icons-material/Flatware";
@@ -50,8 +54,12 @@ export function Main() {
   }, [selectedIndex]);
 
   return (
-    <>
-      <nav>
+    <PageContainer>
+      <nav
+        css={css`
+          position: fixed;
+        `}
+      >
         <MainNavigationUL id="nav-1">
           <li ref={slide1Ref} className="slide1"></li>
           <li ref={slide2Ref} className="slide2"></li>
@@ -72,10 +80,10 @@ export function Main() {
           ))}
         </MainNavigationUL>
       </nav>
-      <PageContainer>
+      <ContentsAreaContainer>
         <Taste />
-      </PageContainer>
-    </>
+      </ContentsAreaContainer>
+    </PageContainer>
   );
 }
 

@@ -6,6 +6,7 @@ import { ProfileImage } from "../components/profile/Profile";
 import theme from "../styles/theme";
 import { ToggleButton } from "../components/Layouts/input/CheckBox";
 import { TasteType } from "../model/TasteType";
+import { LikeButton } from "../components/Relation/Rate";
 
 const TASTE_DUMMY: TasteType[] = [
   {
@@ -26,15 +27,66 @@ const TASTE_DUMMY: TasteType[] = [
     latitude: 12323.4223345,
     longitude: 12323.4223345,
   },
+  {
+    id: 1,
+    name: "suni",
+    title: "test 입니다.",
+    description: "test입니다.",
+    contents: "컨텐츠 테스트",
+    latitude: 12323.4223345,
+    longitude: 12323.4223345,
+  },
+  {
+    id: 1,
+    name: "suni",
+    title: "test 입니다.",
+    description: "test입니다.",
+    contents: "컨텐츠 테스트",
+    latitude: 12323.4223345,
+    longitude: 12323.4223345,
+  },
+  {
+    id: 1,
+    name: "suni",
+    title: "test 입니다.",
+    description: "test입니다.",
+    contents: "컨텐츠 테스트",
+    latitude: 12323.4223345,
+    longitude: 12323.4223345,
+  },
+  {
+    id: 1,
+    name: "suni",
+    title: "test 입니다.",
+    description: "test입니다.",
+    contents: "컨텐츠 테스트",
+    latitude: 12323.4223345,
+    longitude: 12323.4223345,
+  },
+  {
+    id: 1,
+    name: "suni",
+    title: "test 입니다.",
+    description: "test입니다.",
+    contents: "컨텐츠 테스트",
+    latitude: 12323.4223345,
+    longitude: 12323.4223345,
+  },
 ];
+
+const Container = styled.div`
+  margin-top: 7rem;
+  width: 100%;
+  height: 100%;
+`;
 
 export function Taste() {
   return (
-    <>
+    <Container>
       {TASTE_DUMMY.map((taste, index) => (
         <ContentBox fold={false} index={index} taste={taste} />
       ))}
-    </>
+    </Container>
   );
 }
 
@@ -63,6 +115,17 @@ export function ContentBox(props: {
         <span>{taste.title}</span>
       </TitleLine>
       <div></div>
+      <div
+        css={css`
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          padding-left: 30px;
+        `}
+      >
+        <LikeButton />
+      </div>
     </ContentBoxWrapper>
   );
 }
@@ -77,8 +140,6 @@ const ContentBoxWrapper = styled.section<{ fold: boolean }>(
     transition: all 200ms linear;
 
     width: 100%;
-    height: 100%;
-
     border: 1px solid ${theme.islandBlueTheme.contentBoxBorder};
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     border-radius: 15px;
