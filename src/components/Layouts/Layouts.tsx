@@ -3,10 +3,15 @@ import { css } from "@emotion/react";
 import theme from "../../styles/theme";
 
 export const PageContainer = styled.div`
-  width: 640px;
+  width: 630px;
   display: flex;
   flex-direction: column;
+  justify-items: flex-start;
   align-items: center;
+
+  height: 100%;
+
+  position: relative;
 `;
 
 export const Divider = styled.p<{ direction?: boolean; size?: number }>(
@@ -15,3 +20,8 @@ export const Divider = styled.p<{ direction?: boolean; size?: number }>(
     width: ${size}%;
   `,
 );
+
+export const ContentsAreaContainer = styled.div`
+  width: 100%;
+  height: 90vh;
+`;

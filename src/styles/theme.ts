@@ -30,7 +30,7 @@ const fontStyle = {
 const colors = {
   white: "#ffffff",
   black: "#000000",
-  gray: "#b3b3b3",
+  gray: "#979797",
   primary: "#00a0ff",
   secondary: "#ddd",
   hover: "#00a0ff50",
@@ -52,17 +52,34 @@ const colors = {
   gradientGoldRight: "linear-gradient(to right, #d7bc6a, #ffe9a6)",
 };
 
-const IslandBlueTheme = {
+const shadowStyle = {
+  default: "0 1px 2px rgba(0, 0, 0, 0.2)",
+};
+
+const borderRadius = {
+  circle: "10rem",
+  roundedBox: "14px",
+};
+
+const islandBlueTheme = {
   bodyBackground: colors.brightGray,
   mainMenuActiveBackground: colors.babyBlueToneDown,
   fontPrimary: colors.black,
   fontSecondary: colors.gray,
   primary: colors.primary,
   secondary: colors.secondary,
+  gray: "#979797",
   hover: colors.hover,
   contentBoxBorder: colors.brightGray,
   menuAndToggleActiveColor: colors.babyBlueToneDown,
+  menuAndToggleNonActiveColor: colors.secondary,
+  activeBackgroundColor: colors.babyBlueToneDown,
+  nonActiveBackgroundColor: colors.secondary,
   defaultBackground: colors.white,
+  fontColor: {
+    default: colors.black,
+    buttonDefault: colors.white,
+  },
 };
 
 const repo = {
@@ -74,7 +91,9 @@ export type WindowSizeTypes = typeof windowSize;
 export type FontSizeTypes = typeof fontSize;
 export type ColorTypes = typeof colors;
 export type FontTypes = typeof fontStyle;
-export type IslandBlueThemeType = typeof IslandBlueTheme;
+export type ShadowStylesTypes = typeof shadowStyle;
+export type BorderRadiusTypes = typeof borderRadius;
+export type IslandBlueThemeType = typeof islandBlueTheme;
 
 const baseTheme = createTheme();
 
@@ -84,7 +103,9 @@ const theme: Theme = {
   fontStyle,
   fontSize,
   colors,
-  islandBlueTheme: IslandBlueTheme,
+  islandBlueTheme,
+  shadowStyle,
+  borderRadius,
 };
 
 export default theme;

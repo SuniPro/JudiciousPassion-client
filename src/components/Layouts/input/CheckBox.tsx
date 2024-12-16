@@ -20,7 +20,7 @@ const StyledLabel = styled.label<{ color?: string }>(
   ({ color = theme.islandBlueTheme.menuAndToggleActiveColor }) => css`
     background: ${theme.islandBlueTheme.defaultBackground};
     border: 2px solid ${theme.colors.whiteGray};
-    border-radius: 8px;
+    border-radius: ${theme.borderRadius.circle};
     outline: 0;
     display: block;
     width: 50px;
@@ -37,7 +37,7 @@ const StyledLabel = styled.label<{ color?: string }>(
       width: calc(50% - 2px); /* label 너비의 50%에서 2px 작게 */
       height: calc(100% - 2px); /* label 높이에서 2px 작게 */
       background: #f2f2f2;
-      border-radius: 6px;
+      border-radius: ${theme.borderRadius.circle};
       transform: translate(-50%, -50%); /* 부모의 중심으로 이동 */
       transition:
         left 0.3s ease,
