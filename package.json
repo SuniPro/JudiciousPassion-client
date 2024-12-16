@@ -11,10 +11,16 @@
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
+    "@looop/quill-image-resize-module-react": "^3.1.5",
+    "axios": "^1.7.9",
+    "feather-icons": "^4.29.2",
     "prettier": "^3.4.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-draft-wysiwyg": "^1.15.0",
+    "react-quill": "^2.0.0",
     "react-router-dom": "^7.0.2",
+    "uid": "^2.0.2",
     "yarn": "^1.22.22"
   },
   "devDependencies": {
@@ -23,6 +29,7 @@
     "@mui/icons-material": "^6.1.1",
     "@mui/material": "^6.1.5",
     "@mui/utils": "^6.1.5",
+    "@types/feather-icons": "^4.29.4",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
@@ -34,6 +41,7 @@
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.14",
+    "framer-motion": "^11.14.4",
     "globals": "^15.12.0",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.15.0",

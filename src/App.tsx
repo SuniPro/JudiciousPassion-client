@@ -1,10 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import "./App.css";
-import { Taste } from "./pages/Taste";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Main } from "./pages/Main";
 import { css } from "@emotion/react";
 import theme from "./styles/theme";
+import { SideNav } from "./components/Layouts/SideNav";
+import { Editor } from "./components/Editor/Editor";
 
 function App() {
   return (
@@ -15,14 +16,14 @@ function App() {
         }
       `}
     >
+      <SideNav />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Main />}>
-            <Route path="taste" element={<Taste />} />
-          </Route>
+          <Route path="/" element={<Main />}></Route>
+          <Route path="manage">{/*  user chat */}</Route>
+          <Route path="posting" element={<Editor />} />
         </Routes>
       </BrowserRouter>
-      <Taste></Taste>
     </div>
   );
 }
