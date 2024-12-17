@@ -6,6 +6,7 @@ import { css } from "@emotion/react";
 import theme from "./styles/theme";
 import { SideNav } from "./components/Layouts/SideNav";
 import { Editor } from "./components/Editor/Editor";
+import { SearchGoogle } from "./components/Place/PlaceSearch";
 
 function App() {
   return (
@@ -17,11 +18,13 @@ function App() {
       `}
     >
       <SideNav />
+
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Main />}></Route>
           <Route path="manage">{/*  user chat */}</Route>
           <Route path="posting" element={<Editor />} />
+          <Route path="test" element={<SearchGoogle />} />
         </Routes>
       </BrowserRouter>
     </div>
