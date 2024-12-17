@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  ControlPosition,
-  MapControl,
   AdvancedMarker,
+  APIProvider,
+  ControlPosition,
   Map,
+  MapControl,
+  useAdvancedMarkerRef,
   useMap,
   useMapsLibrary,
-  useAdvancedMarkerRef,
-  APIProvider,
 } from "@vis.gl/react-google-maps";
 
 export function SearchGoogle() {
@@ -15,7 +15,7 @@ export function SearchGoogle() {
     useState<google.maps.places.PlaceResult | null>(null);
   const [markerRef, marker] = useAdvancedMarkerRef();
 
-  const API_KEY = "AIzaSyAM8dyt-KQ1dvK8USxXHU4LNG14WaaacBU";
+  const API_KEY = "";
 
   return (
     <APIProvider
