@@ -20,8 +20,6 @@ const MAIN_MENU_LIST = [
   { menu: "Personal", icon: ManageAccountsIcon },
 ];
 
-type MainMenuType = typeof MAIN_MENU_LIST;
-
 export function Main() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const liRefs = useRef<HTMLLIElement[]>([]);

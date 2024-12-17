@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import React, { ReactNode, useEffect } from "react";
+import React, { useEffect } from "react";
 import { css, keyframes } from "@emotion/react";
 import * as feather from "feather-icons";
 import theme from "../../styles/theme";
@@ -141,42 +141,4 @@ const SideNavLink = styled.a`
       transform: translate(0);
     }
   }
-`;
-
-const IconWrapper = styled.div<{ color?: string }>(
-  ({ color }) => css`
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    svg {
-      width: 100%;
-      height: 100%;
-      fill: ${color ? color : "currentColor"};
-    }
-  `,
-);
-
-const MenuText = styled.span`
-  font-size: 16px;
-  color: #333;
-`;
-
-function Menu(props: { menu: string; icon?: ReactNode }) {
-  const { menu, icon } = props;
-  return (
-    <MenuBox>
-      <IconWrapper color="black">{icon}</IconWrapper>
-      <MenuText>{menu}</MenuText>
-    </MenuBox>
-  );
-}
-
-const MenuBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: space-between;
 `;

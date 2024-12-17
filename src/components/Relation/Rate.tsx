@@ -10,16 +10,16 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import theme from "../../styles/theme";
 
-const variantsForBubble = {
-  animationOnCountChange: {
-    scale: [0.1, 1.5, 0, 0],
-    borderColor: ["#E2264D", "#DD4688", "#CC8EF5"],
-    borderWidth: [24, 24, 8, 0, 0, 0, 0, 0],
-    transition: {
-      duration: 1,
-    },
-  },
-};
+// const variantsForBubble = {
+//   animationOnCountChange: {
+//     scale: [0.1, 1.5, 0, 0],
+//     borderColor: ["#E2264D", "#DD4688", "#CC8EF5"],
+//     borderWidth: [24, 24, 8, 0, 0, 0, 0, 0],
+//     transition: {
+//       duration: 1,
+//     },
+//   },
+// };
 
 const variantsForHeart = {
   init: {
@@ -311,47 +311,45 @@ const Container = styled(motion.div)`
   font-family: Arial, Helvetica, sans-serif;
 `;
 
-const HeartBackdrop = styled(motion.div)`
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* background: green; */
-  width: 26px;
-  height: 26px;
-  /* padding: 1rem; */
-  border-radius: 100%;
-  transform: scale(2.2) translateY(-0.25px);
-  opacity: 0.1;
-  transition: all 0.32s ease;
-`;
+// const HeartBackdrop = styled(motion.div)`
+//   position: absolute;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   /* background: green; */
+//   width: 26px;
+//   height: 26px;
+//   /* padding: 1rem; */
+//   border-radius: 100%;
+//   transform: scale(2.2) translateY(-0.25px);
+//   opacity: 0.1;
+//   transition: all 0.32s ease;
+// `;
 
-const BubbleWrapper = styled.div`
-  box-sizing: border-box;
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-`;
+// const BubbleWrapper = styled.div`
+//   box-sizing: border-box;
+//   position: absolute;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   width: 26px;
+//   height: 26px;
+// `;
 
-const Bubble = styled(motion.div)`
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  -webkit-box-sizing: border-box;
-  width: 2rem;
-  min-width: 3rem;
-  height: 3rem;
-  /* background-color: chartreuse; */
-  /* border: 2px solid transparent; */
-  border-style: solid;
-  /* border-color: teal; */
-  border-width: 0px;
-  border-radius: 100%;
-  opacity: 1;
-  pointer-events: none;
-`;
+// const Bubble = styled(motion.div)`
+//   box-sizing: border-box;
+//   width: 2rem;
+//   min-width: 3rem;
+//   height: 3rem;
+//   /* background-color: chartreuse; */
+//   /* border: 2px solid transparent; */
+//   border-style: solid;
+//   /* border-color: teal; */
+//   border-width: 0px;
+//   border-radius: 100%;
+//   opacity: 1;
+//   pointer-events: none;
+// `;
 
 const SparkWrapper = styled(motion.div)`
   box-sizing: border-box;
