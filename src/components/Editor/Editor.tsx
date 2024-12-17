@@ -7,7 +7,7 @@ import { css } from "@emotion/react";
 import theme from "../../styles/theme";
 import styled from "@emotion/styled";
 import * as feather from "feather-icons";
-import { CircleButton, RoundedButton } from "../Layouts/Button";
+import { CircleButton } from "../Layouts/Button";
 
 const IMAGE_UPLOAD_LIMIT = 8;
 
