@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import React, { useEffect, useRef, useState } from "react";
 import {
   AdvancedMarker,
@@ -9,35 +10,63 @@ import {
   useMap,
   useMapsLibrary,
 } from "@vis.gl/react-google-maps";
+import { css } from "@emotion/react";
+import { LocationType } from "../../model/location";
 
-export function SearchGoogle() {
+export function SearchGoogle(props: {
+  setLocation: React.Dispatch<React.SetStateAction<LocationType>>;
+}) {
+  const { setLocation } = props;
   const [selectedPlace, setSelectedPlace] =
     useState<google.maps.places.PlaceResult | null>(null);
   const [markerRef, marker] = useAdvancedMarkerRef();
 
-  const API_KEY = "";
+  // @ts-ignore
+  const API_KEY = import.meta.env.VITE_GOOGLE_MAP_KEY_DATA;
+
+  useEffect(() => {
+    console.log(selectedPlace);
+    if (selectedPlace?.geometry?.location) {
+      const lat = selectedPlace.geometry.location.lat();
+      const lng = selectedPlace.geometry.location.lng();
+      setLocation({
+        location: selectedPlace.formatted_address ?? "",
+        longitude: lng.toString(),
+        latitude: lat.toString(),
+      });
+      console.log("Selected Place:", selectedPlace);
+      console.log("Latitude:", lat, "Longitude:", lng);
+    }
+  }, [selectedPlace, setLocation]);
 
   return (
-    <APIProvider
-      apiKey={API_KEY}
-      solutionChannel="GMP_devsite_samples_v3_rgmautocomplete"
+    <div
+      css={css`
+        width: 600px;
+        height: 600px;
+      `}
     >
-      <Map
-        mapId="bf51a910020fa25a"
-        defaultZoom={3}
-        defaultCenter={{ lat: 22.54992, lng: 0 }}
-        gestureHandling="greedy"
-        disableDefaultUI={true}
+      <APIProvider
+        apiKey={API_KEY}
+        solutionChannel="GMP_devsite_samples_v3_rgmautocomplete"
       >
-        <AdvancedMarker ref={markerRef} position={null} />
-      </Map>
-      <MapControl position={ControlPosition.TOP}>
-        <div className="autocomplete-control">
-          <PlaceAutocomplete onPlaceSelect={setSelectedPlace} />
-        </div>
-      </MapControl>
-      <MapHandler place={selectedPlace} marker={marker} />
-    </APIProvider>
+        <Map
+          mapId="bf51a910020fa25a"
+          defaultZoom={3}
+          defaultCenter={{ lat: 37.5313805, lng: 126.9798839 }}
+          gestureHandling="greedy"
+          disableDefaultUI={true}
+        >
+          <AdvancedMarker ref={markerRef} position={null} />
+        </Map>
+        <MapControl position={ControlPosition.TOP}>
+          <div className="autocomplete-control">
+            <PlaceAutocomplete onPlaceSelect={setSelectedPlace} />
+          </div>
+        </MapControl>
+        <MapHandler place={selectedPlace} marker={marker} />
+      </APIProvider>
+    </div>
   );
 }
 
