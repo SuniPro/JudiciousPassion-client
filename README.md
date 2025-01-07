@@ -1,51 +1,50 @@
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 제피 - React Vite 기반 클라이언트
 
-Currently, two official plugins are available:
+제피의 React-Vite 기반 클라이언트입니다. 제피는 여행 리뷰를 공유하는 SNS로, 여행지를 더 쉽고 즐겁게 탐험할 수 있도록 도와줍니다.  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 📖 프로젝트 설명
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+제피는 여행 경험을 공유하고, 다른 사람의 리뷰를 통해 새로운 여행지를 발견할 수 있는 소셜 네트워크 서비스입니다.  
+- **구글 지도 API**를 활용하여 리뷰의 장소를 시각적으로 표시합니다.  
+- 사용자의 **퍼스널 컬러**를 바탕으로 어울리는 옷을 추천받을 수 있어 여행 준비가 더욱 쉬워집니다.  
 
-- Configure the top-level `parserOptions` property like this:
+---
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## ✨ 주요 기능
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+- **구글 지도 API 통합**: 작성된 리뷰의 장소를 지도에 표시하여 사용자가 쉽게 위치를 파악할 수 있습니다.
+- **퍼스널 컬러 설정**: 자신의 퍼스널 컬러를 지정하고, 해당 컬러를 기반으로 여행지에서 입을 옷을 추천받을 수 있습니다.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+---
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
-# JudiciousPassion-client
+## 🛠️ 설치 방법
+
+로컬 환경에서 프로젝트를 실행하려면 아래 단계를 따라 주세요.
+
+1. 이 Repository를 클론합니다.
+
+2. 필요한 패키지를 설치합니다.
+    ```bash
+    npm install
+    ```
+
+3. 개발 서버를 실행합니다.
+    ```bash
+    npm run dev
+    ```
+
+4. 브라우저에서 [http://localhost:5173](http://localhost:5173)를 열어 실행 중인 애플리케이션을 확인하세요.
+
+---
+
+## 🖥️ 사용 예제
+
+
+---
+
+제피와 함께 여행의 새로운 가능성을 탐험하세요! 🌍 ✈️
+
