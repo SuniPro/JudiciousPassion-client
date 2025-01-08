@@ -3,59 +3,49 @@ import {
   ContentsAreaContainer,
   PageContainer,
 } from "../components/Layouts/Layouts";
-import { Taste } from "./Taste";
 import styled from "@emotion/styled";
 import FlatwareIcon from "@mui/icons-material/Flatware";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { css } from "@emotion/react";
 import theme from "../styles/theme";
+import { Outlet, useNavigate } from "react-router-dom";
+import { FooterNav, SideNav } from "../components/Layouts/Navigation";
+import { MainFrameComponent } from "../components/Layouts/MainFrameComponent";
+import { useUserContext } from "../context/UserContext";
+import { MainMenuType } from "../model/MainMenuType";
 
-const MAIN_MENU_LIST = [
-  { menu: "Taste", icon: FlatwareIcon },
-  { menu: "Saunter", icon: WbSunnyIcon },
-  { menu: "Tour", icon: BeachAccessIcon },
-  { menu: "Personal", icon: ManageAccountsIcon },
+export const MAIN_MENU_LIST: MainMenuType[] = [
+  { menu: "Taste", icon: FlatwareIcon, type: "taste" },
+  { menu: "Saunter", icon: WbSunnyIcon, type: "saunter" },
+  { menu: "Tour", icon: BeachAccessIcon, type: "tour" },
+  { menu: "Personal", icon: ManageAccountsIcon, type: "taste" },
 ];
-
-export function Main() {
+export function MainFrame() {
+  const { user } = useUserContext();
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const liRefs = useRef<HTMLLIElement[]>([]);
-  const slide1Ref = useRef<HTMLLIElement>(null);
-  const slide2Ref = useRef<HTMLLIElement>(null);
+  const navigate = useNavigate();
+
+  const { width, liRefs, slide1Ref, slide2Ref } =
+    MainFrameComponent(selectedIndex);
 
   useEffect(() => {
-    const slide1 = slide1Ref.current;
-    const slide2 = slide2Ref.current;
-    const selectedLi = liRefs.current[selectedIndex];
-
-    if (!slide1 || !slide2) return;
-
-    const rect = selectedLi.getBoundingClientRect();
-    const parentRect = selectedLi.parentElement?.getBoundingClientRect();
-
-    if (!parentRect) return;
-
-    const left = rect.left - parentRect.left;
-    const width = rect.width;
-
-    // slide1 위치 및 크기 업데이트
-    slide1.style.left = `${left}px`;
-    slide1.style.width = `${width}px`;
-
-    // slide2는 비활성화 애니메이션용
-    slide2.style.opacity = "0";
-    slide2.style.left = `${left}px`;
-    slide2.style.width = `${width}px`;
-  }, [selectedIndex]);
+    const locate = MAIN_MENU_LIST[selectedIndex].type;
+    navigate(locate!);
+  }, [navigate, selectedIndex]);
 
   return (
-    <PageContainer>
+    <PageContainer width={width}>
       <nav
         css={css`
           position: fixed;
+          z-index: 10;
+
+          display: flex;
+          flex-direction: column;
+          align-items: center;
         `}
       >
         <MainNavigationUL id="nav-1">
@@ -79,13 +69,15 @@ export function Main() {
         </MainNavigationUL>
       </nav>
       <ContentsAreaContainer>
-        <Taste />
+        <Outlet />
       </ContentsAreaContainer>
+      {width >= 760 ? <SideNav /> : <FooterNav width={width} />}
     </PageContainer>
   );
 }
 
 const MainNavigationUL = styled.ul`
+  width: 100%;
   position: relative;
   border: none;
   border-radius: 10em;
@@ -130,8 +122,7 @@ const MainNavigationUL = styled.ul`
 const ManuObject = styled.div<{ isActive: boolean }>(
   ({ isActive }) => css`
     position: relative;
-    padding: 0.6em 2em;
-    font-size: 18px;
+    padding: 0.4em 1em;
     border: none;
     outline: none;
     color: ${isActive ? theme.colors.white : theme.colors.gray};
