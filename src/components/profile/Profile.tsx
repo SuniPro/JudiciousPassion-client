@@ -74,6 +74,10 @@ const ProfileImageItem = styled.div<{ width?: number; height?: number }>(
     text-align: center;
     fill: gray;
 
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
     img {
       width: ${width}px;
       height: ${height}px;
