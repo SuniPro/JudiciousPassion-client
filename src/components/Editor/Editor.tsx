@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-color-palette/css";
-import { PalletCircle } from "../Layouts/Layouts";
+import { Container, PalletCircle } from "../Layouts/Layouts";
 import { css } from "@emotion/react";
 import theme from "../../styles/theme";
 import styled from "@emotion/styled";
@@ -248,12 +248,6 @@ export function Editor(props: { type: PostingType["type"] }) {
     </Container>
   );
 }
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
 
 const ButtonContainer = styled.div`
   width: 100%;

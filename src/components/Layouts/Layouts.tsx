@@ -20,6 +20,12 @@ export const PageContainer = styled.div<{ width: number }>(
   `,
 );
 
+export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 export const Divider = styled.p<{ direction?: boolean; size?: number }>(
   ({ direction, size = 100 }) => css`
     border-top: 1px solid ${theme.colors.whiteGray};
