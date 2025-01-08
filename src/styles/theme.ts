@@ -59,6 +59,7 @@ const shadowStyle = {
 const borderRadius = {
   circle: "10rem",
   roundedBox: "14px",
+  softBox: "8px",
 };
 
 const islandBlueTheme = {
