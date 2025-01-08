@@ -15,8 +15,10 @@ import { LocationType } from "../../model/location";
 
 export function SearchGoogle(props: {
   setLocation: React.Dispatch<React.SetStateAction<LocationType>>;
+  lat?: number;
+  lng?: number;
 }) {
-  const { setLocation } = props;
+  const { setLocation, lat = 37.5313805, lng = 126.9798839 } = props;
   const [selectedPlace, setSelectedPlace] =
     useState<google.maps.places.PlaceResult | null>(null);
   const [markerRef, marker] = useAdvancedMarkerRef();
@@ -25,19 +27,16 @@ export function SearchGoogle(props: {
   const API_KEY = import.meta.env.VITE_GOOGLE_MAP_KEY_DATA;
 
   useEffect(() => {
-    console.log(selectedPlace);
     if (selectedPlace?.geometry?.location) {
       const lat = selectedPlace.geometry.location.lat();
       const lng = selectedPlace.geometry.location.lng();
       setLocation({
-        location: selectedPlace.formatted_address ?? "",
+        placeName: selectedPlace.formatted_address ?? "",
         longitude: lng.toString(),
         latitude: lat.toString(),
       });
-      console.log("Selected Place:", selectedPlace);
-      console.log("Latitude:", lat, "Longitude:", lng);
     }
-  }, [selectedPlace, setLocation]);
+  }, [lat, lng, selectedPlace, setLocation]);
 
   return (
     <div
@@ -52,10 +51,16 @@ export function SearchGoogle(props: {
       >
         <Map
           mapId="bf51a910020fa25a"
-          defaultZoom={3}
-          defaultCenter={{ lat: 37.5313805, lng: 126.9798839 }}
+          defaultZoom={20}
+          defaultCenter={{ lat: lat, lng: lng }}
           gestureHandling="greedy"
-          disableDefaultUI={true}
+          zoomControl={true}
+          streetViewControl={true}
+          mapTypeControl={true}
+          cameraControl={false}
+          rotateControl={false}
+          fullscreenControl={true}
+          mapTypeId="terrain"
         >
           <AdvancedMarker ref={markerRef} position={null} />
         </Map>
