@@ -1,3 +1,15 @@
+html {
+  scroll-behavior: smooth;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
 #root {
   margin: 0 auto;
   height: 100vh;
@@ -5,4 +17,11 @@
 
 ul li {
   list-style-type: none;
+}
+
+.pac-container {
+  background-color: #fff;
+  z-index: 10000;
+  position: fixed;
+  float: left;
 }
