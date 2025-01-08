@@ -5,6 +5,7 @@ import { ReactNode, useEffect } from "react";
 import * as feather from "feather-icons";
 
 export function CircleButton(props: {
+  className?: string;
   icon: ReactNode;
   func: any;
   isActive: boolean;
@@ -14,9 +15,13 @@ export function CircleButton(props: {
     feather.replace();
   }, []);
 
-  const { icon, func, isActive } = props;
+  const { className, icon, func, isActive } = props;
   return (
-    <CircleButtonContainer isActive={isActive} onClick={() => func()}>
+    <CircleButtonContainer
+      className={className}
+      isActive={isActive}
+      onClick={() => func()}
+    >
       <i data-feather={icon} />
     </CircleButtonContainer>
   );
