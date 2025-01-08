@@ -14,17 +14,15 @@ import theme from "../styles/theme";
 import { Outlet, useNavigate } from "react-router-dom";
 import { FooterNav, SideNav } from "../components/Layouts/Navigation";
 import { MainFrameComponent } from "../components/Layouts/MainFrameComponent";
-import { useUserContext } from "../context/UserContext";
 import { MainMenuType } from "../model/MainMenuType";
 
 export const MAIN_MENU_LIST: MainMenuType[] = [
   { menu: "Taste", icon: FlatwareIcon, type: "taste" },
   { menu: "Saunter", icon: WbSunnyIcon, type: "saunter" },
   { menu: "Tour", icon: BeachAccessIcon, type: "tour" },
-  { menu: "Personal", icon: ManageAccountsIcon, type: "taste" },
+  { menu: "Personal", icon: ManageAccountsIcon, type: "personal" },
 ];
 export function MainFrame() {
-  const { user } = useUserContext();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const navigate = useNavigate();
 
