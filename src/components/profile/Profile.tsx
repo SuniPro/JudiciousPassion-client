@@ -9,14 +9,6 @@ export interface ExtentSizeType {
   height: number;
 }
 
-function ProfileInitials(props: { name: string }) {
-  return (
-    <ProfileInitialContainer color="gray">
-      <p>{props.name}</p>
-    </ProfileInitialContainer>
-  );
-}
-
 export function ProfileImage(props: {
   name: string;
   image?: string; // 선택적 프로퍼티
@@ -83,20 +75,6 @@ const ProfileImageItem = styled.div<{ width?: number; height?: number }>(
       height: ${height}px;
       border-radius: 100%;
     }
-  `,
-);
-
-const ProfileInitialContainer = styled.div<{ color?: string }>(
-  ({ color }) => css`
-    border-radius: 100%;
-    line-height: 40px;
-    width: 50px;
-    height: 50px;
-    background-color: ${color};
-    color: #fff;
-    text-transform: uppercase;
-    font-family: "OpenSans", Arial, sans-serif;
-    font-size: 14px;
   `,
 );
 
