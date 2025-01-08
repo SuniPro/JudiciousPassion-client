@@ -35,6 +35,9 @@ export const Divider = styled.p<{ direction?: boolean; size?: number }>(
 
 export const ContentsAreaContainer = styled.div`
   width: 100%;
+  // 이상하게 div 우측에 html에 요소에 잡히지 않는 빈공간이 생김.
+  // 임의로 조정하기 위해 아래의 transform 을 추가하였으며, 추후 index.html 수정으로 이를 수정하는게 좋을 것 같음.
+  transform: translateX(-1px);
 `;
 
 export function EllipsisCase(props: {

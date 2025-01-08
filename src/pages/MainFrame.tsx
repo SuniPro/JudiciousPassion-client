@@ -88,6 +88,8 @@ const MainNavigationUL = styled.ul`
   padding: 10px;
   justify-content: space-evenly;
 
+  align-items: center;
+
   li {
     margin: 0;
     position: relative;
@@ -122,7 +124,7 @@ const MainNavigationUL = styled.ul`
 const ManuObject = styled.div<{ isActive: boolean }>(
   ({ isActive }) => css`
     position: relative;
-    padding: 0.4em 1em;
+    padding: 0.6em 2em;
     border: none;
     outline: none;
     color: ${isActive ? theme.colors.white : theme.colors.gray};
