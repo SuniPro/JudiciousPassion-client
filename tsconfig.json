@@ -1,10 +1,26 @@
 {
   "files": [],
   "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.node.json"
+    }
   ],
   "compilerOptions": {
-    "strictNullChecks": true
-  }
+    "target": "es2020", // ESM 환경
+    "module": "esnext", // ESM 호환 모듈
+    "moduleResolution": "node", // Node.js 방식 모듈 해석
+    "lib": ["es2020", "dom"], // 브라우저 및 최신 ECMAScript 환경 지원
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "jsx": "react-jsx", // React 17+ JSX 변환
+    "allowImportingTsExtensions": true, // TS 확장자 허용
+    "isolatedModules": true // 각 파일 개별 처리
+  },
+  "include": ["src"], // 프로젝트 소스 디렉토리
+  "exclude": ["node_modules"]
 }
