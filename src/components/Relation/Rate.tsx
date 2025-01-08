@@ -1,14 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
-  motion,
-  useAnimationControls,
   AnimatePresence,
   AnimationControls,
+  motion,
+  useAnimationControls,
 } from "framer-motion";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import theme from "../../styles/theme";
+import { addLike, minusLike } from "../../api/taste";
 
 // const variantsForBubble = {
 //   animationOnCountChange: {
@@ -109,10 +110,16 @@ const variantsForSpark = {
   }),
 };
 
-export function LikeButton() {
+export function LikeButton(props: {
+  rate: number;
+  feedId?: number;
+  type: string;
+  className?: string;
+}) {
+  const { rate, feedId, type, className } = props;
   const controlsForCountChange = useAnimationControls();
 
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(rate);
   const [countActive, setCountActive] = useState(false);
   const [isContainerHovered, setContainerHovered] = useState(false);
   const numbers = [0];
@@ -135,15 +142,17 @@ export function LikeButton() {
       setCountActive(true);
       setCount(count + 1);
       setTheArray((oldArray) => [...oldArray, oldArray.length]);
+      addLike(feedId!, type);
     } else {
       setCountActive(false);
       setCount(count - 1);
+      minusLike(feedId!, type);
     }
   };
 
   return (
     <Container
-      className="container"
+      className={className}
       onClick={() => addEntryClick()}
       onMouseEnter={() => setContainerHovered(true)}
       onMouseLeave={() => setContainerHovered(false)}
