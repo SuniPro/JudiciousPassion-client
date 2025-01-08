@@ -4,7 +4,10 @@ export interface User {
   username: string;
   phoneNumber: string;
   password: string;
-  roleType?: "admin" | "writer" | "guest";
+  profileImage?: string | null;
+  profileMessage?: string | null;
+  personalColor?: string | null;
+  roleType?: "admin" | "user" | "guest";
   insertDate?: string | null;
   insertId?: string | null;
   updateDate?: string | null;
