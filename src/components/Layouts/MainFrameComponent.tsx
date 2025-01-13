@@ -1,9 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { useWindowContext } from "../../context/WindowContext";
 
 export function MainFrameComponent(selectedIndex: number) {
   const liRefs = useRef<HTMLLIElement[]>([]);
   const slide1Ref = useRef<HTMLLIElement>(null);
   const slide2Ref = useRef<HTMLLIElement>(null);
+
+  const { windowWidth } = useWindowContext();
 
   useEffect(() => {
     const slide1 = slide1Ref.current;
@@ -28,21 +31,7 @@ export function MainFrameComponent(selectedIndex: number) {
     slide2.style.opacity = "0";
     slide2.style.left = `${left}px`;
     slide2.style.width = `${width}px`;
-  }, [selectedIndex]);
+  }, [windowWidth, selectedIndex]);
 
-  const [width, setWidth] = useState(window.innerWidth);
-
-  const handleResize = () => {
-    setWidth(window.innerWidth);
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => {
-      // cleanup
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  return { width, liRefs, slide1Ref, slide2Ref };
+  return { windowWidth, liRefs, slide1Ref, slide2Ref };
 }

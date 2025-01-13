@@ -12,8 +12,9 @@ import { TasteType } from "../../model/TasteType";
 import { SaunterType } from "../../model/SaunterType";
 import theme from "../../styles/theme";
 import { TourType } from "../../model/TourType";
+import React, { ReactNode } from "react";
 
-export function Carousel(props: {
+export function ImageCarousel(props: {
   type: PostingType["type"];
   data: any;
   personalColor?: string | null;
@@ -74,6 +75,40 @@ export function Carousel(props: {
             `}
             className="swiper-pagination"
           />
+        </Swiper>
+      </CollectionMain>
+    </CollectionWrapper>
+  );
+}
+
+export function FeedCarousel(props: {
+  children: ReactNode;
+  personalColor?: string | null;
+}) {
+  const { children, personalColor } = props;
+
+  return (
+    <CollectionWrapper personalColor={personalColor}>
+      <CollectionMain>
+        <Swiper
+          effect="cube"
+          modules={[Pagination, Keyboard, Mousewheel]}
+          grabCursor={true}
+          centeredSlides={true}
+          lazy={true}
+          keyboard={{ enabled: true }}
+          loop={true}
+          pagination={{ el: ".swiper-pagination" }}
+          /*Swiper 는 기본적으로 contents box 상태를 유지하기 때문에 하단부의 1px 정도가 잘리게됩니다.
+            때문에 이를 방지하기 위해 하단에 1px 정도의 여유를 두어 잘림을 방지합니다.
+            */
+          css={css`
+            padding-bottom: 1px;
+          `}
+        >
+          {React.Children.map(children, (child, index) => (
+            <SwiperSlide key={index}>{child}</SwiperSlide>
+          ))}
         </Swiper>
       </CollectionMain>
     </CollectionWrapper>

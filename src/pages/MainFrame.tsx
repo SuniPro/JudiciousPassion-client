@@ -29,7 +29,7 @@ export function MainFrame() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const navigate = useNavigate();
 
-  const { width, liRefs, slide1Ref, slide2Ref } =
+  const { windowWidth, liRefs, slide1Ref, slide2Ref } =
     MainFrameComponent(selectedIndex);
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export function MainFrame() {
 
   return (
     <PageContainer
-      width={width}
+      width={windowWidth}
       css={css`
         padding-bottom: 4rem;
       `}
@@ -77,7 +77,7 @@ export function MainFrame() {
       <ContentsAreaContainer>
         <Outlet />
       </ContentsAreaContainer>
-      {width >= 760 ? <SideNav /> : <FooterNav />}
+      {windowWidth >= 760 ? <SideNav /> : <FooterNav />}
     </PageContainer>
   );
 }

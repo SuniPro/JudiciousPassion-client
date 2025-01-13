@@ -11,13 +11,11 @@ import { Editor } from "../components/Editor/Editor";
 import { MainFrameComponent } from "../components/Layouts/MainFrameComponent";
 import { FooterNav, SideNav } from "../components/Layouts/Navigation";
 import { MAIN_MENU_LIST } from "./MainFrame";
-import { useWindowContext } from "../context/WindowContext";
 
 export function EditorMainFrame() {
-  const { windowWidth } = useWindowContext();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const { width, liRefs, slide1Ref, slide2Ref } =
+  const { windowWidth, liRefs, slide1Ref, slide2Ref } =
     MainFrameComponent(selectedIndex);
 
   return (
@@ -51,7 +49,7 @@ export function EditorMainFrame() {
       <ContentsAreaContainer>
         <Editor type={MAIN_MENU_LIST[selectedIndex].type} />
       </ContentsAreaContainer>
-      {width >= 760 ? <SideNav /> : <FooterNav width={width} />}
+      {windowWidth >= 760 ? <SideNav /> : <FooterNav />}
     </PageContainer>
   );
 }
