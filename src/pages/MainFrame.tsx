@@ -8,34 +8,35 @@ import FlatwareIcon from "@mui/icons-material/Flatware";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import BeachAccessIcon from "@mui/icons-material/BeachAccess";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { css } from "@emotion/react";
 import theme from "../styles/theme";
-import { Outlet, useNavigate } from "react-router-dom";
 import { FooterNav, SideNav } from "../components/Layouts/Navigation";
 import { MainFrameComponent } from "../components/Layouts/MainFrameComponent";
 import { MainMenuType } from "../model/MainMenuType";
+import { Taste } from "./Taste";
+import { Tour } from "./Tour";
+import { Personal } from "./Personal";
 
 // Carousel 에 첨부되는 미디어 파일들의 크기를 조정하기 위한 값입니다.
 export const MEDIA_SIZE_PADDING = 20;
 
 export const MAIN_MENU_LIST: MainMenuType[] = [
-  { menu: "Taste", icon: FlatwareIcon, type: "taste" },
-  { menu: "Saunter", icon: WbSunnyIcon, type: "saunter" },
-  { menu: "Tour", icon: BeachAccessIcon, type: "tour" },
-  { menu: "Personal", icon: ManageAccountsIcon, type: "personal" },
+  { menu: "Taste", icon: FlatwareIcon, type: "taste", component: <Taste /> },
+  { menu: "Saunter", icon: WbSunnyIcon, type: "saunter", component: <Taste /> },
+  { menu: "Tour", icon: BeachAccessIcon, type: "tour", component: <Tour /> },
+  {
+    menu: "Personal",
+    icon: ManageAccountsIcon,
+    type: "personal",
+    component: <Personal />,
+  },
 ];
 export function MainFrame() {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const navigate = useNavigate();
 
   const { windowWidth, liRefs, slide1Ref, slide2Ref } =
     MainFrameComponent(selectedIndex);
-
-  useEffect(() => {
-    const locate = MAIN_MENU_LIST[selectedIndex].type;
-    navigate(locate!);
-  }, [navigate, selectedIndex]);
 
   return (
     <PageContainer
@@ -75,7 +76,7 @@ export function MainFrame() {
         </MainNavigationUL>
       </nav>
       <ContentsAreaContainer>
-        <Outlet />
+        {MAIN_MENU_LIST[selectedIndex].component}
       </ContentsAreaContainer>
       {windowWidth >= 760 ? <SideNav /> : <FooterNav />}
     </PageContainer>

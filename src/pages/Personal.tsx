@@ -32,6 +32,7 @@ import { FeedCarousel } from "../components/Carousel/ImageCarousel";
 import { TourType } from "../model/TourType";
 import { TourContentBox } from "./Tour";
 import { useWindowContext } from "../context/WindowContext";
+import { useProportionHook } from "../hooks/useWindowHook";
 
 const USER_CONNECT_FUNC = [MessageIcon, UserPlusIcon];
 const USER_CERTIFY_LIST = [
@@ -49,11 +50,7 @@ export function Personal() {
   const { user } = useUserContext();
   const { windowWidth } = useWindowContext();
 
-  const [profileSize, setProfileSize] = useState(150);
-
-  useEffect(() => {
-    setProfileSize(windowWidth <= 630 ? (windowWidth / 630) * 150 : 150);
-  }, [windowWidth]);
+  const { size } = useProportionHook(windowWidth, 150, 630);
 
   const { data: tastes } = useQuery({
     queryKey: ["getTasteByInsertId", user],
@@ -104,7 +101,7 @@ export function Personal() {
         <ProfileBox>
           <ProfileImage
             name="suni"
-            extentSize={{ width: profileSize, height: profileSize }}
+            extentSize={{ width: size, height: size }}
             css={css`
               img {
                 box-shadow: 0 0 20px ${personalColorOpacity};
@@ -118,7 +115,7 @@ export function Personal() {
               setPaletteOpen((prev) => !prev);
             }}
             backgroundColor={user.personalColor!}
-            width={profileSize}
+            width={size}
           />
           {paletteOpen && (
             <ColorPicker

@@ -33,6 +33,7 @@ import {
   UserLine,
   Username,
 } from "../components/Layouts/Feed";
+import { useProportionHook } from "../hooks/useWindowHook";
 
 export function Taste() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -77,6 +78,8 @@ export function TasteContentBox(props: {
     feather.replace();
   }, []);
 
+  const { size } = useProportionHook(windowWidth, 180, 630);
+
   const [contentsFold, setContentsFold] = useState<boolean>(false);
 
   const [placeModalOpen, setPlaceModalOpen] = useState(false);
@@ -105,7 +108,7 @@ export function TasteContentBox(props: {
             </Username>
             <Tooltip title="클릭해서 위치를 확인하세요 !">
               <EllipsisCase
-                width={180}
+                width={size}
                 text={taste.placeName}
                 textAlign="left"
                 css={css`
