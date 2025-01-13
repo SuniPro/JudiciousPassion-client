@@ -83,6 +83,7 @@ export function Personal() {
                 box-shadow: 0 0 20px ${personalColorOpacity};
               }
               padding: 10px 0 0 0;
+              margin-bottom: 10px;
             `}
           />
           <PersonalColorChecker

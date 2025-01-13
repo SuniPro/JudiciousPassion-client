@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { css, keyframes } from "@emotion/react";
 import * as feather from "feather-icons";
 import theme from "../../styles/theme";
@@ -39,29 +39,44 @@ const createGooeyEffect = (i: number) =>
 export function FooterNav(props: { width: number }) {
   const { user } = useUserContext();
 
+  const listRef = useRef<HTMLLIElement>(null);
+  const [listSize, setListSize] = useState({ width: 0, height: 0 });
+
   useEffect(() => {
     feather.replace();
   }, [user]);
 
+  useEffect(() => {
+    if (!listRef.current) return;
+    setListSize({
+      width: listRef.current.offsetWidth,
+      height: listRef.current.offsetHeight,
+    });
+  }, [props.width]);
+
   return (
     <FooterNavWrapper width={props.width}>
-      <Container>
-        <FooterNavBar>
-          <FooterNavUL className="navbar__menu">
-            {NAV_MENU.map((item, index) => (
-              <FooterManuList key={`${index} + ${item}`} index={index}>
-                <FooterNavLink href={item.link} className="navbar__link">
-                  {user && item.description === "로그인" ? (
-                    <LogOutIcon />
-                  ) : (
-                    <item.icon />
-                  )}
-                </FooterNavLink>
-              </FooterManuList>
-            ))}
-          </FooterNavUL>
-        </FooterNavBar>
-      </Container>
+      <FooterNavBar>
+        <FooterNavUL className="navbar__menu">
+          {NAV_MENU.map((item, index) => (
+            <FooterManuList
+              key={`${index} + ${item}`}
+              index={index}
+              ref={listRef}
+              width={listSize.width}
+              height={listSize.height}
+            >
+              <FooterNavLink href={item.link} className="navbar__link">
+                {user && item.description === "로그인" ? (
+                  <LogOutIcon />
+                ) : (
+                  <item.icon />
+                )}
+              </FooterNavLink>
+            </FooterManuList>
+          ))}
+        </FooterNavUL>
+      </FooterNavBar>
     </FooterNavWrapper>
   );
 }
@@ -82,16 +97,28 @@ const FooterNavBar = styled.nav`
   background: #fff;
   border-radius: ${theme.borderRadius.roundedBox};
   box-shadow: ${theme.shadowStyle.default};
+  width: 90%;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
 `;
 
 const FooterNavUL = styled.ul`
+  width: 100%;
+  padding: 0;
   display: flex;
   flex-direction: row;
-  padding: 0;
+  justify-content: center;
+  gap: 10%;
 `;
 
-const FooterManuList = styled.li<{ index: number }>(
-  ({ index }) => css`
+const FooterManuList = styled.li<{
+  index: number;
+  width: number;
+  height: number;
+}>(
+  ({ index, width, height }) => css`
     position: relative;
 
     &:before {
@@ -99,10 +126,10 @@ const FooterManuList = styled.li<{ index: number }>(
       position: absolute;
       opacity: 0;
       top: 0;
-      left: ${spacer};
-      width: ${linkHeight};
-      height: ${linkHeight};
-      border-radius: calc(${theme.borderRadius.roundedBox} * 1.75);
+      transform: translateX(-22%) translateY(-22%);
+      width: ${width + 20}px;
+      height: ${height + 20}px;
+      border-radius: ${theme.borderRadius.roundedBox};
       transition: ${timing} cubic-bezier(1, 0.2, 0.1, 1.2) all;
       background: ${theme.islandBlueTheme.menuAndToggleActiveColor};
       animation: ${createGooeyEffect(index)} ${timing} ease-in-out;
@@ -119,8 +146,7 @@ const FooterNavLink = styled.a`
   display: flex;
   align-items: center;
   justify-content: center;
-  height: ${linkHeight};
-  width: calc(${spacer} * 5.5);
+  width: 100%;
   color: ${theme.islandBlueTheme.fontSecondary};
   transition: ${transition};
 
@@ -174,7 +200,9 @@ const Wrapper = styled.section`
   flex-direction: column;
 `;
 
-const Container = styled.div``;
+const Container = styled.div`
+  width: 100%;
+`;
 
 const SideNavbar = styled.nav`
   position: fixed;

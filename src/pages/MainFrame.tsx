@@ -16,6 +16,9 @@ import { FooterNav, SideNav } from "../components/Layouts/Navigation";
 import { MainFrameComponent } from "../components/Layouts/MainFrameComponent";
 import { MainMenuType } from "../model/MainMenuType";
 
+// Carousel 에 첨부되는 미디어 파일들의 크기를 조정하기 위한 값입니다.
+export const MEDIA_SIZE_PADDING = 20;
+
 export const MAIN_MENU_LIST: MainMenuType[] = [
   { menu: "Taste", icon: FlatwareIcon, type: "taste" },
   { menu: "Saunter", icon: WbSunnyIcon, type: "saunter" },
@@ -35,7 +38,12 @@ export function MainFrame() {
   }, [navigate, selectedIndex]);
 
   return (
-    <PageContainer width={width}>
+    <PageContainer
+      width={width}
+      css={css`
+        padding-bottom: 5rem;
+      `}
+    >
       <nav
         css={css`
           position: fixed;
@@ -88,6 +96,10 @@ const MainNavigationUL = styled.ul`
 
   align-items: center;
 
+  @media ${theme.windowSize.small} {
+    font-size: 70%;
+  }
+
   li {
     margin: 0;
     position: relative;
@@ -122,7 +134,7 @@ const MainNavigationUL = styled.ul`
 const ManuObject = styled.div<{ isActive: boolean }>(
   ({ isActive }) => css`
     position: relative;
-    padding: 0.6em 2em;
+    padding: 6% 2em;
     border: none;
     outline: none;
     color: ${isActive ? theme.colors.white : theme.colors.gray};

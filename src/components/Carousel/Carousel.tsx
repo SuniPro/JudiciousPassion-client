@@ -103,7 +103,6 @@ const StyledSwiperSlide = styled(SwiperSlide)<{
 
     &.swiper-slide {
       height: ${size}px;
-      max-height: 500px;
       display: flex;
       flex-direction: column;
       justify-content: end;

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { Divider, PalletCircle } from "../components/Layouts/Layouts";
+import { EllipsisCase, PalletCircle } from "../components/Layouts/Layouts";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { ProfileImage } from "../components/profile/Profile";
@@ -43,7 +43,7 @@ export function Taste() {
         css={css`
           display: flex;
           flex-direction: column;
-          margin-top: 6rem;
+          margin-top: 5rem;
         `}
       >
         {data.pages.map((page, index) => (
@@ -96,9 +96,19 @@ export function ContentBox(props: {
               {taste.insertId}
             </Username>
             <Tooltip title="클릭해서 위치를 확인하세요 !">
-              <PlaceDescription onClick={() => setPlaceModalOpen(true)}>
-                {taste.placeName}
-              </PlaceDescription>
+              <EllipsisCase
+                width={180}
+                text={taste.placeName}
+                textAlign="left"
+                css={css`
+                  font-size: 60%;
+                  color: ${theme.colors.gray};
+                  cursor: pointer;
+                `}
+              ></EllipsisCase>
+              {/*<PlaceDescription onClick={() => setPlaceModalOpen(true)}>*/}
+              {/*  */}
+              {/*</PlaceDescription>*/}
             </Tooltip>
           </ProfileDescription>
         </UserLine>
@@ -130,12 +140,11 @@ export function ContentBox(props: {
       <TitleLine css={css``}>
         <span>{taste.title}</span>
       </TitleLine>
-      <Divider size={95} />
+      {/*<Divider size={95} />*/}
 
       <div
         css={css`
           width: ${windowWidth}px;
-          max-width: 600px;
           display: flex;
           flex-direction: column;
           margin-bottom: 10px;
@@ -213,13 +222,13 @@ export const DefaultContentBoxWrapper = styled.section<{
 
     width: 100%;
     border: 1px solid ${theme.islandBlueTheme.contentBoxBorder};
-    box-shadow: 0 1px 2px ${shadowColor};
+    // box-shadow: 0 1px 2px ${shadowColor};
     border-radius: 15px;
 
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 4px;
+    margin-bottom: 20px;
   `,
 );
 
@@ -278,6 +287,9 @@ const TitleLine = styled.div`
   align-items: flex-start;
   font-family: ${theme.fontStyle.roboto};
   font-weight: bold;
+
+  // test
+  padding-bottom: 1rem;
 `;
 
 const ContentsFold = styled.div`
@@ -305,5 +317,5 @@ const Contents = styled.div`
 
 const Date = styled.div`
   font-family: ${theme.fontStyle.roboto};
-  font-size: 90%;
+  font-size: 80%;
 `;

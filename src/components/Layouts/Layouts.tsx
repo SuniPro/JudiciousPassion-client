@@ -4,7 +4,7 @@ import theme from "../../styles/theme";
 
 export const PageContainer = styled.div<{ width: number }>(
   ({ width = 630 }) => css`
-    width: ${width - 10}px;
+    width: ${width}px;
     max-width: 630px;
     display: flex;
     flex-direction: column;
@@ -13,7 +13,6 @@ export const PageContainer = styled.div<{ width: number }>(
 
     height: 100%;
     position: relative;
-    padding-bottom: 30px;
 
     @media ${theme.windowSize.small} {
     }
