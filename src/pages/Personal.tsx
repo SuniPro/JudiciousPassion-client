@@ -23,6 +23,15 @@ import { profilePersonalColorChange } from "../api/user";
 import { ErrorNotify } from "../components/Alert/Alert";
 import { SignForm } from "../components/Sign/Sign";
 import { ProfileMessageChangeModal } from "../Modal/Modal";
+import { useQuery } from "@tanstack/react-query";
+import { getTasteByInsertId, getTourByInsertId } from "../api/personal";
+import { TasteType } from "../model/TasteType";
+import { TasteContentBox } from "./Taste";
+import { MainFunctionContainer } from "../components/Layouts/Layouts";
+import { FeedCarousel } from "../components/Carousel/ImageCarousel";
+import { TourType } from "../model/TourType";
+import { TourContentBox } from "./Tour";
+import { useWindowContext } from "../context/WindowContext";
 
 const USER_CONNECT_FUNC = [MessageIcon, UserPlusIcon];
 const USER_CERTIFY_LIST = [
@@ -38,12 +47,30 @@ const totalProfiles = 8;
 
 export function Personal() {
   const { user } = useUserContext();
+  const { windowWidth } = useWindowContext();
+
+  const [profileSize, setProfileSize] = useState(150);
+
+  useEffect(() => {
+    setProfileSize(windowWidth <= 630 ? (windowWidth / 630) * 150 : 150);
+  }, [windowWidth]);
+
+  const { data: tastes } = useQuery({
+    queryKey: ["getTasteByInsertId", user],
+    queryFn: () => getTasteByInsertId(user?.username ?? "suni"),
+  });
+
+  const { data: tours } = useQuery({
+    queryKey: ["getTourByInsertId", user],
+    queryFn: () => getTourByInsertId(user?.username ?? ""),
+  });
 
   useEffect(() => {
     // Feather Icons를 React에 적용
     feather.replace();
   }, []);
 
+  const [feedFolder, setFeedFolder] = useState<boolean>(false);
   const [color, setColor] = useColor(theme.colors.secondary);
   const [userState, setUserState] = useState<User | null>(user);
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -77,7 +104,7 @@ export function Personal() {
         <ProfileBox>
           <ProfileImage
             name="suni"
-            extentSize={{ width: 150, height: 150 }}
+            extentSize={{ width: profileSize, height: profileSize }}
             css={css`
               img {
                 box-shadow: 0 0 20px ${personalColorOpacity};
@@ -91,6 +118,7 @@ export function Personal() {
               setPaletteOpen((prev) => !prev);
             }}
             backgroundColor={user.personalColor!}
+            width={profileSize}
           />
           {paletteOpen && (
             <ColorPicker
@@ -102,7 +130,11 @@ export function Personal() {
         </ProfileBox>
         <ProfileDescriptionBox>
           <UserInfoArea>
-            <ContentsBox>
+            <ContentsBox
+              css={css`
+                gap: 20px;
+              `}
+            >
               <Username>{user.username}</Username>
               <div
                 css={css`
@@ -111,8 +143,10 @@ export function Personal() {
                   gap: 10px;
                 `}
               >
-                {USER_CONNECT_FUNC.map((Func) => (
-                  <Func />
+                {USER_CONNECT_FUNC.map((Func, index) => (
+                  <React.Fragment key={index}>
+                    <Func />
+                  </React.Fragment>
                 ))}
               </div>
             </ContentsBox>
@@ -186,12 +220,13 @@ export function Personal() {
               `}
             >
               <UserDescriptionIcon data-feather="check" />
-              {USER_CERTIFY_LIST.map((certify) => {
-                const Icon = certify.icons;
-                return (
+              {USER_CERTIFY_LIST.map((certify, index) => (
+                <Tooltip title={certify.description}>
                   <div
+                    key={index}
                     css={css`
                       height: 20px;
+
                       svg {
                         width: 20px;
                         height: 20px;
@@ -199,24 +234,104 @@ export function Personal() {
                       }
                     `}
                   >
-                    <Tooltip title={certify.description}>
-                      <Icon />
-                    </Tooltip>
+                    <ForwardRefIcon
+                      Icon={certify.icons}
+                      description={certify.description}
+                    />
                   </div>
-                );
-              })}
+                </Tooltip>
+              ))}
             </UserDescription>
           </ContentsBox>
         </ProfileDescriptionBox>
       </PersonalWrapper>
+      <FeedCounter>
+        <div>
+          <span>Feed : 30</span>
+        </div>
+        <div
+          css={css`
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+          `}
+        >
+          <span>taste : {tastes?.length}</span>
+          <span>saunter : 4</span>
+          <span>tour : {tours?.length}</span>
+        </div>
+      </FeedCounter>
+      <MainFunctionContainer
+        css={css`
+          margin-top: 1rem;
+        `}
+      >
+        <FeedCarousel>
+          <>
+            {tastes?.map((taste, index) => (
+              <React.Fragment key={index}>
+                <TasteFeed taste={taste}></TasteFeed>
+              </React.Fragment>
+            ))}
+          </>
+          <>
+            {tours?.map((tour, index) => (
+              <React.Fragment key={index}>
+                <TourFeed tour={tour}></TourFeed>
+              </React.Fragment>
+            ))}
+          </>
+        </FeedCarousel>
+      </MainFunctionContainer>
       <Modal open={messageModalOpen}>
         <ProfileMessageChangeModal
           message={user.profileMessage}
           user={userState}
           onClose={() => setMessageModalOpen(false)}
-        ></ProfileMessageChangeModal>
+        />
       </Modal>
     </Container>
+  );
+}
+
+const ForwardRefIcon = React.forwardRef<
+  SVGSVGElement,
+  { Icon: React.ElementType; [key: string]: any; description: string }
+>(({ Icon, description, ...props }, ref) => <Icon ref={ref} {...props} />);
+
+function TasteFeed(props: { taste: TasteType }) {
+  const { taste } = props;
+  const [fold, setFold] = useState<boolean>(false);
+
+  return (
+    <label className="label" onClick={() => setFold((prev) => !prev)}>
+      <TasteContentBox
+        css={css`
+          margin: 0 0 10px 0;
+          box-sizing: border-box;
+        `}
+        fold={fold}
+        taste={taste}
+      />
+    </label>
+  );
+}
+
+function TourFeed(props: { tour: TourType }) {
+  const { tour } = props;
+  const [fold, setFold] = useState<boolean>(false);
+
+  return (
+    <label className="label" onClick={() => setFold((prev) => !prev)}>
+      <TourContentBox
+        css={css`
+          margin: 0 0 10px 0;
+          box-sizing: border-box;
+        `}
+        fold={fold}
+        tour={tour}
+      />
+    </label>
   );
 }
 
@@ -227,6 +342,7 @@ const Container = styled.div`
 `;
 
 const ProfileBox = styled.div`
+  width: 30%;
   background-color: white;
   transition: all 200ms linear;
 
@@ -244,9 +360,14 @@ const ProfileBox = styled.div`
     z-index: 10;
     transform: translateY(56%);
   }
+
+  @media ${theme.windowSize.small} {
+    padding: 10px 0;
+  }
 `;
 
 const ProfileDescriptionBox = styled.div`
+  width: 70%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -292,8 +413,9 @@ const ContentsBox = styled.div`
   flex-direction: row;
 
   align-items: center;
+  flex-wrap: wrap;
 
-  gap: 20px;
+  gap: 5px;
 `;
 
 const UserInfoArea = styled.div`
@@ -301,10 +423,13 @@ const UserInfoArea = styled.div`
   flex-direction: column;
 `;
 
-const PersonalColorChecker = styled.div<{ backgroundColor: string }>(
-  ({ backgroundColor }) => css`
+const PersonalColorChecker = styled.div<{
+  backgroundColor: string;
+  width: number;
+}>(
+  ({ backgroundColor, width }) => css`
     height: 10px;
-    width: 150px;
+    width: ${width}px;
     border: 4px solid ${theme.islandBlueTheme.defaultBackground};
     box-shadow: ${theme.shadowStyle.default};
     border-radius: ${theme.borderRadius.roundedBox};
@@ -315,4 +440,21 @@ const PersonalColorChecker = styled.div<{ backgroundColor: string }>(
 
 const ProfileMessage = styled.span`
   cursor: pointer;
+`;
+
+const FeedCounter = styled.div`
+  width: 100%;
+  height: 40px;
+  border: 1px solid ${theme.islandBlueTheme.secondary};
+  border-radius: ${theme.borderRadius.roundedBox};
+  box-sizing: border-box;
+  margin-top: 1rem;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 20px;
+  align-items: center;
+
+  font-family: ${theme.fontStyle.roboto};
 `;

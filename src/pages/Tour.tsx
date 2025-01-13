@@ -10,18 +10,29 @@ import theme from "../styles/theme";
 import { Modal, Tooltip } from "@mui/material";
 import {
   DefaultContentBoxWrapper,
-  Divider,
   MainFunctionContainer,
   PalletCircle,
 } from "../components/Layouts/Layouts";
 import { iso8601ToYYMMDDHHMM } from "../components/Date/DateFormatter";
-import { Carousel } from "../components/Carousel/Carousel";
+import { ImageCarousel } from "../components/Carousel/ImageCarousel";
 import { LikeButton } from "../components/Relation/Rate";
 import { PersonalColorModal, PlaceModal } from "../Modal/Modal";
-import styled from "@emotion/styled";
 import { getTourList } from "../api/tour";
 import { TourType } from "../model/TourType";
 import { useWindowContext } from "../context/WindowContext";
+import {
+  Contents,
+  ContentsBox,
+  ContentsDescription,
+  ContentsFold,
+  Date,
+  PlaceDescription,
+  ProfileDescription,
+  ProfileLine,
+  TitleLine,
+  UserLine,
+  Username,
+} from "../components/Layouts/Feed";
 
 export function Tour() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
@@ -48,7 +59,7 @@ export function Tour() {
           <React.Fragment key={index}>
             {page.map((tour, index) => (
               <React.Fragment key={index}>
-                <ContentBox fold={false} index={index} tour={tour} />
+                <TourContentBox fold={false} tour={tour} />
               </React.Fragment>
             ))}
           </React.Fragment>
@@ -58,12 +69,12 @@ export function Tour() {
   );
 }
 
-export function ContentBox(props: {
+export function TourContentBox(props: {
   tour: TourType;
-  index: number;
   fold: boolean;
+  className?: string;
 }) {
-  const { tour, index, fold } = props;
+  const { tour, fold, className } = props;
   const { windowWidth } = useWindowContext();
   useEffect(() => {
     // Feather Icons를 React에 적용
@@ -85,7 +96,10 @@ export function ContentBox(props: {
 
   // @ts-ignore
   return (
-    <DefaultContentBoxWrapper fold={fold} shadowColor={personalColorOpacity}>
+    <DefaultContentBoxWrapper
+      shadowColor={personalColorOpacity}
+      className={className}
+    >
       <ProfileLine>
         <UserLine>
           <ProfileImage name="suni" />
@@ -128,48 +142,52 @@ export function ContentBox(props: {
       <TitleLine css={css``}>
         <span>{tour.title}</span>
       </TitleLine>
-      <Divider size={95} />
+      {/*<Divider size={95} />*/}
 
-      <div
-        css={css`
-          width: 600px;
-          display: flex;
-          flex-direction: column;
-          margin-bottom: 10px;
-          box-shadow: ${theme.shadowStyle.default};
-        `}
-      >
-        <Carousel
-          type="tour"
-          data={tour}
-          personalColor={tour.personalColor}
-          size={windowWidth}
-        />
-      </div>
-      <ContentsBox contentsFold={contentsFold}>
-        {contentsFold ? (
-          <Contents dangerouslySetInnerHTML={{ __html: tour.contents }} />
-        ) : (
-          <ContentsFold onClick={() => setContentsFold(true)}>
-            내용보기
-          </ContentsFold>
-        )}
-      </ContentsBox>
-      <div
-        css={css`
-          width: 100%;
-          display: flex;
-          flex-direction: row;
-          justify-content: flex-start;
-          padding-left: 30px;
-        `}
-      >
-        <LikeButton
-          rate={tour.rate ? tour.rate : 0}
-          feedId={tour.id}
-          type="tour"
-        />
-      </div>
+      {fold ? (
+        <>
+          <div
+            css={css`
+              width: 600px;
+              display: flex;
+              flex-direction: column;
+              margin-bottom: 10px;
+              box-shadow: ${theme.shadowStyle.default};
+            `}
+          >
+            <ImageCarousel
+              type="tour"
+              data={tour}
+              personalColor={tour.personalColor}
+              size={windowWidth}
+            />
+          </div>
+          <ContentsBox contentsFold={contentsFold}>
+            {contentsFold ? (
+              <Contents dangerouslySetInnerHTML={{ __html: tour.contents }} />
+            ) : (
+              <ContentsFold onClick={() => setContentsFold(true)}>
+                내용보기
+              </ContentsFold>
+            )}
+          </ContentsBox>
+          <div
+            css={css`
+              width: 100%;
+              display: flex;
+              flex-direction: row;
+              justify-content: flex-start;
+              padding-left: 30px;
+            `}
+          >
+            <LikeButton
+              rate={tour.rate ? tour.rate : 0}
+              feedId={tour.id}
+              type="tour"
+            />
+          </div>
+        </>
+      ) : null}
       <Modal
         open={personalColorModalOpen}
         aria-labelledby="modal-modal-title"
@@ -197,95 +215,5 @@ export function ContentBox(props: {
 }
 
 function SkeletonContentBox() {
-  return <DefaultContentBoxWrapper fold={false}></DefaultContentBoxWrapper>;
+  return <DefaultContentBoxWrapper></DefaultContentBoxWrapper>;
 }
-
-const Container = styled.div`
-  width: 100%;
-  height: 100%;
-`;
-
-const UserLine = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
-const ProfileLine = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-  justify-content: space-between;
-`;
-
-const ProfileDescription = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-`;
-
-const Username = styled.span<{ color?: string }>(
-  ({ color = theme.colors.black }) => css`
-    font-size: 18px;
-    color: ${color};
-    font-weight: bold;
-  `,
-);
-
-const PlaceDescription = styled.span`
-  width: 100%;
-  font-size: 60%;
-  color: ${theme.colors.gray};
-  cursor: pointer;
-`;
-
-const ContentsDescription = styled.div`
-  padding: 10px 10px;
-  height: 100%;
-  font-size: 16px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-
-  gap: 4px;
-`;
-
-const TitleLine = styled.div`
-  width: 94%;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  font-family: ${theme.fontStyle.roboto};
-  font-weight: bold;
-`;
-
-const ContentsFold = styled.div`
-  color: ${theme.islandBlueTheme.gray};
-  cursor: pointer;
-  font-weight: bold;
-`;
-
-const ContentsBox = styled.div<{ contentsFold: boolean }>(
-  ({ contentsFold }) => css`
-    height: ${contentsFold ? "auto" : "10%"};
-    width: 95%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 10px 30px;
-
-    transition: height 1.4s ease-in-out;
-  `,
-);
-
-const Contents = styled.div`
-  font-family: ${theme.fontStyle.montserrat};
-`;
-
-const Date = styled.div`
-  font-family: ${theme.fontStyle.roboto};
-  font-size: 90%;
-`;

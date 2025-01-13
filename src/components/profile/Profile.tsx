@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React from "react";
+import React, { useRef } from "react";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import profileImage from "../../assets/ProfileImage.png";
@@ -35,9 +35,19 @@ export function ProfileImage(props: {
     />
   );
 
+  const profileImageItemRef = useRef<HTMLDivElement>(null);
+
+  const profileImageItemWidth = profileImageItemRef.current
+    ? profileImageItemRef.current.offsetWidth
+    : 100;
+
   return (
     <ProfileItem className={className} href={href || "#"} title="Profile Image">
-      <ProfileImageItem width={extentSize?.width} height={extentSize?.height}>
+      <ProfileImageItem
+        ref={profileImageItemRef}
+        width={extentSize?.width}
+        height={extentSize?.height}
+      >
         {content}
       </ProfileImageItem>
     </ProfileItem>

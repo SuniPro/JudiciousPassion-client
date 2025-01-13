@@ -10,6 +10,7 @@ export const PageContainer = styled.div<{ width: number }>(
     flex-direction: column;
     justify-items: flex-start;
     align-items: center;
+    box-sizing: border-box;
 
     height: 100%;
     position: relative;
@@ -34,9 +35,6 @@ export const Divider = styled.p<{ direction?: boolean; size?: number }>(
 
 export const ContentsAreaContainer = styled.div`
   width: 100%;
-  // 이상하게 div 우측에 html에 요소에 잡히지 않는 빈공간이 생김.
-  // 임의로 조정하기 위해 아래의 transform 을 추가하였으며, 추후 index.html 수정으로 이를 수정하는게 좋을 것 같음.
-  transform: translateX(-1px);
 `;
 
 /**
@@ -54,10 +52,9 @@ export const MainFunctionContainer = styled.div`
  * Taste, Saunter, Tour 에서 사용하기 위한 DefaultContentBoxWrapper 입니다.
  * 피드를 구성하는 최상위 요소입니다. */
 export const DefaultContentBoxWrapper = styled.section<{
-  fold: boolean;
   shadowColor?: string;
 }>(
-  ({ fold, shadowColor }) => css`
+  ({ shadowColor }) => css`
     background-color: white;
     transition: all 200ms linear;
 
@@ -73,8 +70,7 @@ export const DefaultContentBoxWrapper = styled.section<{
 
     @media ${theme.windowSize.small} {
       border-radius: 0;
-      border-bottom: 0;
-      margin-bottom: 0;
+      margin-bottom: -1px;
     }
   `,
 );
