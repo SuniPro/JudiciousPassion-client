@@ -39,6 +39,46 @@ export const ContentsAreaContainer = styled.div`
   transform: translateX(-1px);
 `;
 
+/**
+ * Taste, Saunter, Tour 에서 사용하기 위한 MainContainer 입니다.
+ * DefaultContentBoxWrapper 의 부모요소입니다.*/
+export const MainFunctionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 5rem;
+  width: 100%;
+  height: 100%;
+`;
+
+/**
+ * Taste, Saunter, Tour 에서 사용하기 위한 DefaultContentBoxWrapper 입니다.
+ * 피드를 구성하는 최상위 요소입니다. */
+export const DefaultContentBoxWrapper = styled.section<{
+  fold: boolean;
+  shadowColor?: string;
+}>(
+  ({ fold, shadowColor }) => css`
+    background-color: white;
+    transition: all 200ms linear;
+
+    width: 100%;
+    border: 1px solid ${theme.islandBlueTheme.secondary};
+    // box-shadow: 0 1px 2px ${shadowColor};
+    border-radius: ${theme.borderRadius.roundedBox};
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+
+    @media ${theme.windowSize.small} {
+      border-radius: 0;
+      border-bottom: 0;
+      margin-bottom: 0;
+    }
+  `,
+);
+
 export function EllipsisCase(props: {
   text: string;
   textAlign: string;

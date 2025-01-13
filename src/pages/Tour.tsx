@@ -8,7 +8,12 @@ import { LocationType } from "../model/location";
 import { ProfileImage } from "../components/profile/Profile";
 import theme from "../styles/theme";
 import { Modal, Tooltip } from "@mui/material";
-import { Divider, PalletCircle } from "../components/Layouts/Layouts";
+import {
+  DefaultContentBoxWrapper,
+  Divider,
+  MainFunctionContainer,
+  PalletCircle,
+} from "../components/Layouts/Layouts";
 import { iso8601ToYYMMDDHHMM } from "../components/Date/DateFormatter";
 import { Carousel } from "../components/Carousel/Carousel";
 import { LikeButton } from "../components/Relation/Rate";
@@ -38,13 +43,7 @@ export function Tour() {
 
   return (
     <>
-      <Container
-        css={css`
-          display: flex;
-          flex-direction: column;
-          margin-top: 6rem;
-        `}
-      >
+      <MainFunctionContainer>
         {data.pages.map((page, index) => (
           <React.Fragment key={index}>
             {page.map((tour, index) => (
@@ -54,7 +53,7 @@ export function Tour() {
             ))}
           </React.Fragment>
         ))}
-      </Container>
+      </MainFunctionContainer>
     </>
   );
 }
@@ -86,7 +85,7 @@ export function ContentBox(props: {
 
   // @ts-ignore
   return (
-    <ContentBoxWrapper fold={fold} shadowColor={personalColorOpacity}>
+    <DefaultContentBoxWrapper fold={fold} shadowColor={personalColorOpacity}>
       <ProfileLine>
         <UserLine>
           <ProfileImage name="suni" />
@@ -193,38 +192,18 @@ export function ContentBox(props: {
           lng={tour.longitude}
         />
       </Modal>
-    </ContentBoxWrapper>
+    </DefaultContentBoxWrapper>
   );
 }
 
 function SkeletonContentBox() {
-  return <ContentBoxWrapper fold={false}></ContentBoxWrapper>;
+  return <DefaultContentBoxWrapper fold={false}></DefaultContentBoxWrapper>;
 }
 
 const Container = styled.div`
   width: 100%;
   height: 100%;
 `;
-
-const ContentBoxWrapper = styled.section<{
-  fold: boolean;
-  shadowColor?: string;
-}>(
-  ({ fold, shadowColor }) => css`
-    background-color: white;
-    transition: all 200ms linear;
-
-    width: 100%;
-    border: 1px solid ${theme.islandBlueTheme.contentBoxBorder};
-    box-shadow: 0 1px 2px ${shadowColor};
-    border-radius: 15px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 4px;
-  `,
-);
 
 const UserLine = styled.div`
   display: flex;

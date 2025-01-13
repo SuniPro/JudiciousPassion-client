@@ -14,6 +14,7 @@ import {
   MessageIcon,
   SettingsIcon,
 } from "../FeatherIcon/Icons";
+import { useWindowContext } from "../../context/WindowContext";
 
 const spacer = "1rem";
 const linkHeight = `calc(${spacer} * 3.5)`;
@@ -36,8 +37,9 @@ const createGooeyEffect = (i: number) =>
     "100%": { transform: "scale(1, 1)" },
   });
 
-export function FooterNav(props: { width: number }) {
+export function FooterNav() {
   const { user } = useUserContext();
+  const { windowWidth } = useWindowContext();
 
   const listRef = useRef<HTMLLIElement>(null);
   const [listSize, setListSize] = useState({ width: 0, height: 0 });
@@ -52,10 +54,10 @@ export function FooterNav(props: { width: number }) {
       width: listRef.current.offsetWidth,
       height: listRef.current.offsetHeight,
     });
-  }, [props.width]);
+  }, [windowWidth]);
 
   return (
-    <FooterNavWrapper width={props.width}>
+    <FooterNavWrapper width={windowWidth}>
       <FooterNavBar>
         <FooterNavUL className="navbar__menu">
           {NAV_MENU.map((item, index) => (
@@ -97,11 +99,15 @@ const FooterNavBar = styled.nav`
   background: #fff;
   border-radius: ${theme.borderRadius.roundedBox};
   box-shadow: ${theme.shadowStyle.default};
-  width: 90%;
+  width: 100%;
 
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
+
+  @media ${theme.windowSize.small} {
+    border-radius: 0;
+  }
 `;
 
 const FooterNavUL = styled.ul`

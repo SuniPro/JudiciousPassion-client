@@ -41,7 +41,7 @@ export function MainFrame() {
     <PageContainer
       width={width}
       css={css`
-        padding-bottom: 5rem;
+        padding-bottom: 4rem;
       `}
     >
       <nav
@@ -77,7 +77,7 @@ export function MainFrame() {
       <ContentsAreaContainer>
         <Outlet />
       </ContentsAreaContainer>
-      {width >= 760 ? <SideNav /> : <FooterNav width={width} />}
+      {width >= 760 ? <SideNav /> : <FooterNav />}
     </PageContainer>
   );
 }

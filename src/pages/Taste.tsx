@@ -1,5 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { EllipsisCase, PalletCircle } from "../components/Layouts/Layouts";
+import {
+  DefaultContentBoxWrapper,
+  EllipsisCase,
+  MainFunctionContainer,
+  PalletCircle,
+} from "../components/Layouts/Layouts";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { ProfileImage } from "../components/profile/Profile";
@@ -18,11 +23,6 @@ import { PersonalColorModal, PlaceModal } from "../Modal/Modal";
 import { LocationType } from "../model/location";
 import { useWindowContext } from "../context/WindowContext";
 
-const Container = styled.div`
-  width: 100%;
-  height: 100%;
-`;
-
 export function Taste() {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
@@ -39,13 +39,7 @@ export function Taste() {
 
   return (
     <>
-      <Container
-        css={css`
-          display: flex;
-          flex-direction: column;
-          margin-top: 5rem;
-        `}
-      >
+      <MainFunctionContainer>
         {data.pages.map((page, index) => (
           <React.Fragment key={index}>
             {page.map((taste, index) => (
@@ -55,7 +49,7 @@ export function Taste() {
             ))}
           </React.Fragment>
         ))}
-      </Container>
+      </MainFunctionContainer>
     </>
   );
 }
@@ -145,6 +139,7 @@ export function ContentBox(props: {
       <div
         css={css`
           width: ${windowWidth}px;
+          max-width: 630px;
           display: flex;
           flex-direction: column;
           margin-bottom: 10px;
@@ -211,26 +206,6 @@ export function ContentBox(props: {
 function SkeletonContentBox() {
   return <DefaultContentBoxWrapper fold={false}></DefaultContentBoxWrapper>;
 }
-
-export const DefaultContentBoxWrapper = styled.section<{
-  fold: boolean;
-  shadowColor?: string;
-}>(
-  ({ fold, shadowColor }) => css`
-    background-color: white;
-    transition: all 200ms linear;
-
-    width: 100%;
-    border: 1px solid ${theme.islandBlueTheme.contentBoxBorder};
-    // box-shadow: 0 1px 2px ${shadowColor};
-    border-radius: 15px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px;
-  `,
-);
 
 const UserLine = styled.div`
   display: flex;
