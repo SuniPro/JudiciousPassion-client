@@ -10,8 +10,7 @@ import { ProfileImage } from "../components/profile/Profile";
 import theme from "../styles/theme";
 import { TasteType } from "../model/TasteType";
 import { LikeButton } from "../components/Relation/Rate";
-import React, { useEffect, useState } from "react";
-import * as feather from "feather-icons";
+import React, { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getTasteList } from "../api/taste";
 import { useBodyScrollBottomOver } from "../hooks/useWheel";
@@ -56,7 +55,7 @@ export function Taste() {
           <React.Fragment key={index}>
             {page.map((taste, index) => (
               <React.Fragment key={index}>
-                <TasteContentBox fold={true} taste={taste} />
+                <TasteContentBox fold={false} taste={taste} />
               </React.Fragment>
             ))}
           </React.Fragment>
@@ -73,32 +72,21 @@ export function TasteContentBox(props: {
 }) {
   const { taste, fold, className } = props;
   const { windowWidth } = useWindowContext();
-  useEffect(() => {
-    // Feather Icons를 React에 적용
-    feather.replace();
-  }, []);
 
   const { size } = useProportionHook(windowWidth, 180, 630);
 
-  const [contentsFold, setContentsFold] = useState<boolean>(false);
-
   const [placeModalOpen, setPlaceModalOpen] = useState(false);
   const [personalColorModalOpen, setPersonalColorModalOpen] = useState(false);
+
+  const [contentsFold, setContentsFold] = useState<boolean>(false);
   const [location, setLocation] = useState<LocationType>({
     placeName: "",
     longitude: "",
     latitude: "",
   });
-  const personalColorOpacity = taste.personalColor
-    ? taste.personalColor + "CC"
-    : "rgba(0, 0, 0, 0.2)";
 
-  // @ts-ignore
   return (
-    <DefaultContentBoxWrapper
-      shadowColor={personalColorOpacity}
-      className={className}
-    >
+    <DefaultContentBoxWrapper className={className}>
       <ProfileLine>
         <UserLine>
           <ProfileImage name="suni" />
@@ -153,7 +141,7 @@ export function TasteContentBox(props: {
       </TitleLine>
       {/*<Divider size={95} />*/}
 
-      {fold ? (
+      {fold ? null : (
         <>
           <div
             css={css`
@@ -197,7 +185,7 @@ export function TasteContentBox(props: {
             />
           </div>
         </>
-      ) : null}
+      )}
       <Modal
         open={personalColorModalOpen}
         aria-labelledby="modal-modal-title"

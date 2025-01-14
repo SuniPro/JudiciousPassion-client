@@ -1,8 +1,7 @@
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import theme from "../../styles/theme";
-import { ReactNode, useEffect } from "react";
-import * as feather from "feather-icons";
+import { ReactNode } from "react";
 
 export function CircleButton(props: {
   className?: string;
@@ -10,11 +9,6 @@ export function CircleButton(props: {
   func: any;
   isActive: boolean;
 }) {
-  useEffect(() => {
-    // Feather Icons를 React에 적용
-    feather.replace();
-  }, []);
-
   const { className, icon, func, isActive } = props;
   return (
     <CircleButtonContainer

@@ -7,7 +7,6 @@ import { Profile, ProfileImage } from "../components/profile/Profile";
 import theme from "../styles/theme";
 import { ColorPicker, useColor } from "react-color-palette";
 import React, { useEffect, useState } from "react";
-import * as feather from "feather-icons";
 import {
   EmailIcon,
   MapPinIcon,
@@ -61,11 +60,6 @@ export function Personal() {
     queryKey: ["getTourByInsertId", user],
     queryFn: () => getTourByInsertId(user?.username ?? ""),
   });
-
-  useEffect(() => {
-    // Feather Icons를 React에 적용
-    feather.replace();
-  }, []);
 
   const [feedFolder, setFeedFolder] = useState<boolean>(false);
   const [color, setColor] = useColor(theme.colors.secondary);
@@ -298,7 +292,7 @@ const ForwardRefIcon = React.forwardRef<
 
 function TasteFeed(props: { taste: TasteType }) {
   const { taste } = props;
-  const [fold, setFold] = useState<boolean>(false);
+  const [fold, setFold] = useState<boolean>(true);
 
   return (
     <label className="label" onClick={() => setFold((prev) => !prev)}>
@@ -316,7 +310,7 @@ function TasteFeed(props: { taste: TasteType }) {
 
 function TourFeed(props: { tour: TourType }) {
   const { tour } = props;
-  const [fold, setFold] = useState<boolean>(false);
+  const [fold, setFold] = useState<boolean>(true);
 
   return (
     <label className="label" onClick={() => setFold((prev) => !prev)}>

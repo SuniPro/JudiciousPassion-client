@@ -17,13 +17,19 @@ import { MainMenuType } from "../model/MainMenuType";
 import { Taste } from "./Taste";
 import { Tour } from "./Tour";
 import { Personal } from "./Personal";
+import { Saunter } from "./Saunter";
 
 // Carousel 에 첨부되는 미디어 파일들의 크기를 조정하기 위한 값입니다.
 export const MEDIA_SIZE_PADDING = 20;
 
 export const MAIN_MENU_LIST: MainMenuType[] = [
   { menu: "Taste", icon: FlatwareIcon, type: "taste", component: <Taste /> },
-  { menu: "Saunter", icon: WbSunnyIcon, type: "saunter", component: <Taste /> },
+  {
+    menu: "Saunter",
+    icon: WbSunnyIcon,
+    type: "saunter",
+    component: <Saunter />,
+  },
   { menu: "Tour", icon: BeachAccessIcon, type: "tour", component: <Tour /> },
   {
     menu: "Personal",
