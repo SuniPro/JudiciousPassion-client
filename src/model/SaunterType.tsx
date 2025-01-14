@@ -2,13 +2,14 @@ export interface SaunterType {
   id: number;
   placeName: string;
   title: string;
-  travelMode: string;
-  description: string;
-  content: string;
+  travelMode: "driving" | "walking" | "bicycling";
+  contents: string;
+  personalColor?: string | null;
+  rate?: number | null;
   insertDate: string;
   insertId: string;
-  updateDate: string;
-  updateId: string;
+  updateDate?: string;
+  updateId?: string;
   waypoints: WaypointType[];
   mediaUrls?: string[] | null;
 }

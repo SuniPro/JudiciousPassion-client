@@ -51,16 +51,13 @@ export const MainFunctionContainer = styled.div`
 /**
  * Taste, Saunter, Tour 에서 사용하기 위한 DefaultContentBoxWrapper 입니다.
  * 피드를 구성하는 최상위 요소입니다. */
-export const DefaultContentBoxWrapper = styled.section<{
-  shadowColor?: string;
-}>(
-  ({ shadowColor }) => css`
+export const DefaultContentBoxWrapper = styled.section<{}>(
+  () => css`
     background-color: white;
     transition: all 200ms linear;
 
     width: 100%;
     border: 1px solid ${theme.islandBlueTheme.secondary};
-    // box-shadow: 0 1px 2px ${shadowColor};
     border-radius: ${theme.borderRadius.roundedBox};
 
     display: flex;

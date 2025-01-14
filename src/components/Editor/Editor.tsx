@@ -7,7 +7,6 @@ import { Container, PalletCircle } from "../Layouts/Layouts";
 import { css } from "@emotion/react";
 import theme from "../../styles/theme";
 import styled from "@emotion/styled";
-import * as feather from "feather-icons";
 import { CircleButton } from "../Layouts/Button";
 import { PostingType } from "../../model/DynamicTypeExtend";
 import { Modal } from "@mui/material";
@@ -65,11 +64,6 @@ const formats = [
 
 export function Editor(props: { type: PostingType["type"] }) {
   const { user } = useUserContext();
-
-  useEffect(() => {
-    // Feather Icons를 React에 적용
-    feather.replace();
-  }, []);
 
   const [contents, setContents] = useState("");
   const [open, setOpen] = useState(false);
@@ -264,11 +258,6 @@ function ImageUpload(props: {
   imageUrlState: ImageUrlStateType;
   reactiveColor: string;
 }) {
-  useEffect(() => {
-    // Feather Icons를 React에 적용
-    feather.replace();
-  }, []);
-
   const { reactiveColor } = props;
   const { imageUrl, setImageUrl } = props.imageUrlState;
 

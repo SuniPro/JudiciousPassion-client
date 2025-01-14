@@ -2,8 +2,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useBodyScrollBottomOver } from "../hooks/useWheel";
 import { css } from "@emotion/react";
-import React, { useEffect, useState } from "react";
-import * as feather from "feather-icons";
+import React, { useState } from "react";
 import { LocationType } from "../model/location";
 import { ProfileImage } from "../components/profile/Profile";
 import theme from "../styles/theme";
@@ -76,10 +75,6 @@ export function TourContentBox(props: {
 }) {
   const { tour, fold, className } = props;
   const { windowWidth } = useWindowContext();
-  useEffect(() => {
-    // Feather Icons를 React에 적용
-    feather.replace();
-  }, []);
 
   const [contentsFold, setContentsFold] = useState<boolean>(false);
 
@@ -90,16 +85,9 @@ export function TourContentBox(props: {
     longitude: "",
     latitude: "",
   });
-  const personalColorOpacity = tour.personalColor
-    ? tour.personalColor + "CC"
-    : "rgba(0, 0, 0, 0.2)";
 
-  // @ts-ignore
   return (
-    <DefaultContentBoxWrapper
-      shadowColor={personalColorOpacity}
-      className={className}
-    >
+    <DefaultContentBoxWrapper className={className}>
       <ProfileLine>
         <UserLine>
           <ProfileImage name="suni" />
@@ -144,7 +132,7 @@ export function TourContentBox(props: {
       </TitleLine>
       {/*<Divider size={95} />*/}
 
-      {fold ? (
+      {fold ? null : (
         <>
           <div
             css={css`
@@ -187,7 +175,7 @@ export function TourContentBox(props: {
             />
           </div>
         </>
-      ) : null}
+      )}
       <Modal
         open={personalColorModalOpen}
         aria-labelledby="modal-modal-title"
