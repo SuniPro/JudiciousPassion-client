@@ -32,6 +32,7 @@ import { TourType } from "../model/TourType";
 import { TourContentBox } from "./Tour";
 import { useWindowContext } from "../context/WindowContext";
 import { useProportionHook } from "../hooks/useWindowHook";
+import { useContentIconHook } from "../hooks/useContents";
 
 const USER_CONNECT_FUNC = [MessageIcon, UserPlusIcon];
 const USER_CERTIFY_LIST = [
@@ -46,6 +47,7 @@ const PROFILE_VIEW_LIMIT = 4;
 const totalProfiles = 8;
 
 export function Personal() {
+  useContentIconHook();
   const { user } = useUserContext();
   const { windowWidth } = useWindowContext();
 
@@ -61,7 +63,6 @@ export function Personal() {
     queryFn: () => getTourByInsertId(user?.username ?? ""),
   });
 
-  const [feedFolder, setFeedFolder] = useState<boolean>(false);
   const [color, setColor] = useColor(theme.colors.secondary);
   const [userState, setUserState] = useState<User | null>(user);
   const [paletteOpen, setPaletteOpen] = useState(false);
