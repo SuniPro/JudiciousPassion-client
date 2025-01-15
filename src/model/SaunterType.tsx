@@ -2,7 +2,7 @@ export interface SaunterType {
   id: number;
   placeName: string;
   title: string;
-  travelMode: "driving" | "walking" | "bicycling";
+  travelMode: "BICYCLING" | "DRIVING" | "TRANSIT" | "WALKING";
   contents: string;
   personalColor?: string | null;
   rate?: number | null;
@@ -12,7 +12,10 @@ export interface SaunterType {
   updateId?: string;
   waypoints: WaypointType[];
   mediaUrls?: string[] | null;
+  youtubeLink?: string | null;
 }
+
+type TravelModeType = google.maps.TravelMode;
 
 export interface WaypointType {
   id: number;

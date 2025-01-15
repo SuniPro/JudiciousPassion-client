@@ -14,11 +14,12 @@ import { css } from "@emotion/react";
 import { LocationType } from "../../model/location";
 
 export function SearchGoogle(props: {
-  setLocation: React.Dispatch<React.SetStateAction<LocationType>>;
+  setLocation?: React.Dispatch<React.SetStateAction<LocationType>>;
   lat?: number;
   lng?: number;
+  size?: { width: number; height: number };
 }) {
-  const { setLocation, lat = 37.5313805, lng = 126.9798839 } = props;
+  const { setLocation, lat = 37.5313805, lng = 126.9798839, size } = props;
   const [selectedPlace, setSelectedPlace] =
     useState<google.maps.places.PlaceResult | null>(null);
   const [markerRef, marker] = useAdvancedMarkerRef();
@@ -28,21 +29,37 @@ export function SearchGoogle(props: {
 
   useEffect(() => {
     if (selectedPlace?.geometry?.location) {
-      const lat = selectedPlace.geometry.location.lat();
-      const lng = selectedPlace.geometry.location.lng();
+      if (!setLocation) return;
       setLocation({
         placeName: selectedPlace.formatted_address ?? "",
-        longitude: lng.toString(),
-        latitude: lat.toString(),
+        longitude: selectedPlace.geometry.location.lat(),
+        latitude: selectedPlace.geometry.location.lng(),
       });
     }
-  }, [lat, lng, selectedPlace, setLocation]);
+    if (!marker) return;
+    marker.position = { lat, lng };
+  }, [lat, lng, marker, selectedPlace, setLocation]);
+
+  const coordinateSelector = () => {
+    if (
+      selectedPlace &&
+      selectedPlace.geometry &&
+      selectedPlace.geometry.location
+    ) {
+      return {
+        lat: selectedPlace.geometry.location.lat(),
+        lng: selectedPlace.geometry.location.lng(),
+      };
+    }
+
+    return { lat, lng };
+  };
 
   return (
     <div
       css={css`
-        width: 600px;
-        height: 600px;
+        width: ${size?.width}px;
+        height: ${size?.height}px;
       `}
     >
       <APIProvider
@@ -62,7 +79,7 @@ export function SearchGoogle(props: {
           fullscreenControl={true}
           mapTypeId="terrain"
         >
-          <AdvancedMarker ref={markerRef} position={null} />
+          <AdvancedMarker ref={markerRef} position={coordinateSelector()} />
         </Map>
         <MapControl position={ControlPosition.TOP}>
           <div className="autocomplete-control">
@@ -89,7 +106,14 @@ const MapHandler = ({ place, marker }: MapHandlerProps) => {
     if (place.geometry?.viewport) {
       map.fitBounds(place.geometry.viewport);
     }
-    marker.position = place.geometry?.location;
+
+    if (!place.geometry?.location) return;
+
+    const lat = place.geometry.location.lat();
+    const lng = place.geometry.location.lng();
+
+    // setSelectedPlace 를 통해 지정된 좌표를 marker에 반영하여 지도에 marker를 표시합니다.
+    marker.position = { lat, lng };
   }, [map, place, marker]);
 
   return null;
@@ -105,6 +129,7 @@ const PlaceAutocomplete = ({ onPlaceSelect }: PlaceAutocompleteProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const places = useMapsLibrary("places");
 
+  // input 에 입력된 장소를 좌표와 이름, 주소로 치환하여 setPlaceAutocomplete 에 저장합니다.
   useEffect(() => {
     if (!places || !inputRef.current) return;
 

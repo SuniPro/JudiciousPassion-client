@@ -18,3 +18,29 @@ export const useProportionHook = (
   }, [dependent, independent, parameter]);
   return { size };
 };
+
+export const useProportionSizeHook = (
+  independent: number,
+  dependentWidth: number,
+  dependentHeight: number,
+  parameter: number,
+) => {
+  const [size, setSize] = useState({
+    width: dependentWidth,
+    height: dependentHeight,
+  });
+  useEffect(() => {
+    setSize((prev) => ({
+      ...prev,
+      width:
+        independent <= parameter
+          ? (independent / parameter) * dependentWidth
+          : dependentWidth,
+      height:
+        independent <= parameter
+          ? (independent / parameter) * dependentHeight
+          : dependentHeight,
+    }));
+  }, [independent, parameter, dependentWidth, dependentHeight]);
+  return { size };
+};

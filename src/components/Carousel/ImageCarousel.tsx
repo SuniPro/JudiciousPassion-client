@@ -9,7 +9,6 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import { PostingType } from "../../model/DynamicTypeExtend";
 import { TasteType } from "../../model/TasteType";
-import { SaunterType } from "../../model/SaunterType";
 import theme from "../../styles/theme";
 import { TourType } from "../../model/TourType";
 import React, { ReactNode } from "react";
@@ -19,10 +18,11 @@ export function ImageCarousel(props: {
   data: any;
   personalColor?: string | null;
   size: number;
+  children?: ReactNode;
 }) {
-  const { type, data, personalColor, size } = props;
+  const { type, data, personalColor, size, children } = props;
 
-  const renderSlides = (urls: string[] | undefined) => {
+  const imageRender = (urls: string[] | undefined) => {
     if (!urls) {
       return <></>;
     }
@@ -42,14 +42,22 @@ export function ImageCarousel(props: {
     );
   };
 
+  const mediaRender = () => (
+    <>
+      {React.Children.map(children, (child, index) => (
+        <SwiperSlide key={index}>{child}</SwiperSlide>
+      ))}
+    </>
+  );
+
   const dataAdaptor = () => {
     switch (type) {
       case "taste":
-        return renderSlides((data as TasteType).imageUrls!);
+        return imageRender((data as TasteType).imageUrls!);
       case "saunter":
-        return renderSlides((data as SaunterType).mediaUrls!);
+        return mediaRender();
       case "tour":
-        return renderSlides((data as TourType).imageUrls!);
+        return imageRender((data as TourType).imageUrls!);
       default:
         return <div>No valid data found</div>;
     }

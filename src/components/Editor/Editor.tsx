@@ -18,6 +18,7 @@ import heic2any from "heic2any";
 import { ColorPicker, useColor } from "react-color-palette";
 import { useUserContext } from "../../context/UserContext";
 import { ErrorNotify } from "../Alert/Alert";
+import { useContentIconHook } from "../../hooks/useContents";
 
 interface ImageUrlStateType {
   imageUrl: Blob[];
@@ -74,8 +75,8 @@ export function Editor(props: { type: PostingType["type"] }) {
 
   const [location, setLocation] = useState<LocationType>({
     placeName: "",
-    longitude: "",
-    latitude: "",
+    longitude: 0,
+    latitude: 0,
   });
 
   const navigate = useNavigate();
@@ -236,6 +237,7 @@ export function Editor(props: { type: PostingType["type"] }) {
           <PlaceModal
             onClose={() => setOpen(false)}
             locationState={setLocation}
+            type="editor"
           />
         }
       />
@@ -258,13 +260,12 @@ function ImageUpload(props: {
   imageUrlState: ImageUrlStateType;
   reactiveColor: string;
 }) {
+  useContentIconHook();
   const { reactiveColor } = props;
   const { imageUrl, setImageUrl } = props.imageUrlState;
 
   const handleFileChange = async (fileBlob: File): Promise<Blob> => {
-    console.log(fileBlob);
     const blob = await heic2any({ blob: fileBlob, toType: "image/jpeg" });
-    console.log(blob);
     if (Array.isArray(blob)) {
       return blob[0]; // 첫 번째 Blob 반환
     }

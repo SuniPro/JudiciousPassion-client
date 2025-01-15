@@ -12,95 +12,114 @@ import { User } from "../model/User";
 import { Divider } from "../components/Layouts/Layouts";
 import { profileMessageChange } from "../api/user";
 import { ErrorNotify, SuccessNotify } from "../components/Alert/Alert";
+import { useContentIconHook } from "../hooks/useContents";
+import { PlaceView } from "../components/Place/PlaceView";
+import { WaypointType } from "../model/SaunterType";
 
-function Place(
+function PlaceEditor(
   props: {
     onClose: () => void;
-    locationState: React.Dispatch<React.SetStateAction<LocationType>>;
+    locationState?: React.Dispatch<React.SetStateAction<LocationType>>;
     lat?: number;
     lng?: number;
+    size?: { width: number; height: number };
+    type?: "view" | "editor";
+    wayPoint?: WaypointType[];
+    travelMode?: "BICYCLING" | "DRIVING" | "TRANSIT" | "WALKING";
   },
   ref: React.Ref<HTMLDivElement>,
 ) {
-  const { onClose, locationState, lng, lat } = props;
-
-  // const [searchInputValue, setSearchInputValue] = useState<string>("");
-  //
-  // useEffect(() => {
-  //   const observer = new MutationObserver(() => {
-  //     const inputElement = document.querySelector(
-  //       ".pac-target-input",
-  //     ) as HTMLInputElement | null;
-  //
-  //     if (inputElement) {
-  //       const handleInput = (event: Event) => {
-  //         const target = event.target as HTMLInputElement;
-  //         setSearchInputValue(target.value); // 상태 업데이트
-  //       };
-  //
-  //       inputElement.addEventListener("input", handleInput);
-  //
-  //       // 정리
-  //       return () => {
-  //         inputElement.removeEventListener("input", handleInput);
-  //       };
-  //     }
-  //   });
-  //
-  //   // body를 관찰하여 변화 감지
-  //   observer.observe(document.body, { childList: true, subtree: true });
-  //
-  //   return () => observer.disconnect(); // 정리: Observer 중지;
-  // }, []);
+  useContentIconHook();
+  const {
+    onClose,
+    locationState,
+    lng,
+    lat,
+    size,
+    type = "editor",
+    wayPoint,
+    travelMode,
+  } = props;
 
   return (
     <>
-      <div
-        css={css`
-          position: absolute;
-          top: 14%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          display: flex;
-          flex-direction: row;
-          flex-wrap: nowrap;
-          gap: 10px;
-        `}
-      >
-        <CircleButton icon="x" func={onClose} isActive={true} />
-      </div>
-      <StyledModalBox>
-        <SearchGoogle setLocation={locationState} lng={lng} lat={lat} />
+      <StyledModalBox width={size?.width} height={size?.height}>
+        <div
+          css={css`
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            height: 50px;
+          `}
+        >
+          <TextFunction onClick={onClose}>취소</TextFunction>
+          <span>장소 확인</span>
+          <TextFunction onClick={onClose}>확인</TextFunction>
+        </div>
+        <Divider
+          css={css`
+            padding: 0;
+            margin: 0;
+          `}
+        />
+        {type === "editor" ? (
+          <SearchGoogle
+            setLocation={locationState}
+            lng={lng}
+            lat={lat}
+            size={size}
+          />
+        ) : (
+          <PlaceView
+            size={size}
+            lng={lng}
+            lat={lat}
+            wayPoint={wayPoint}
+            travelMode={travelMode as google.maps.TravelMode}
+          />
+        )}
       </StyledModalBox>
     </>
   );
 }
 
-export const PlaceModal = forwardRef(Place);
+export const PlaceModal = forwardRef(PlaceEditor);
 
-export const StyledModalBox = styled(Box)`
-  position: absolute;
-  top: 56%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 600px;
-  height: 76%;
-  border-radius: ${theme.borderRadius.softBox};
-  color: #000000;
-  background-color: black;
-  overflow-y: scroll;
-  border: 2px solid ${theme.islandBlueTheme.activeBackgroundColor};
+export const StyledModalBox = styled(Box)<{ width?: number; height?: number }>(
+  ({ width = 630, height = 500 }) => css`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: ${width}px;
+    height: ${height}px;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    background-color: ${theme.islandBlueTheme.defaultBackground};
+    border-radius: ${theme.borderRadius.roundedBox};
 
-  .css-4nmryk-MuiBackdrop-root-MuiModal-backdrop {
-    z-index: 10;
-  }
+    .pac-target-input {
+      width: ${width / 2.5}px;
+      height: 22px;
+      border-radius: ${theme.borderRadius.softBox};
+      border: 1px solid ${theme.islandBlueTheme.gray};
 
-  .pac-target-input {
-    width: 300px;
-    height: 22px;
-    border-radius: ${theme.borderRadius.softBox};
-    border: 1px solid ${theme.islandBlueTheme.gray};
-  }
+      transform: translateY(40%);
+      top: 0;
+    }
+
+    .css-4nmryk-MuiBackdrop-root-MuiModal-backdrop {
+      z-index: 10;
+    }
+  `,
+);
+
+const TextFunction = styled.span`
+  cursor: pointer;
 `;
 
 function Sign(props: { onClose: () => void }, ref: React.Ref<HTMLDivElement>) {
