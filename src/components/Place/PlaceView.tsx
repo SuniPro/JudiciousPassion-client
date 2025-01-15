@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import {
   APIProvider,
   Map,
-  useAdvancedMarkerRef,
   useMap,
   useMapsLibrary,
 } from "@vis.gl/react-google-maps";
@@ -24,9 +23,6 @@ export function PlaceView(props: {
     wayPoint,
     travelMode,
   } = props;
-  const [selectedPlace, setSelectedPlace] =
-    useState<google.maps.places.PlaceResult | null>(null);
-  const [markerRef, marker] = useAdvancedMarkerRef();
 
   // @ts-ignore
   const API_KEY = import.meta.env.VITE_GOOGLE_MAP_KEY_DATA;
@@ -60,34 +56,6 @@ export function PlaceView(props: {
     </div>
   );
 }
-
-interface MapHandlerProps {
-  place: google.maps.places.PlaceResult | null;
-  marker: google.maps.marker.AdvancedMarkerElement | null;
-}
-
-const MapHandler = (props: {
-  MapHandlerProps: MapHandlerProps;
-  lng: number;
-  lat: number;
-}) => {
-  const { MapHandlerProps, lng, lat } = props;
-  const { place, marker } = MapHandlerProps;
-  const map = useMap();
-
-  useEffect(() => {
-    if (!map || !place || !marker) return;
-
-    if (place.geometry?.viewport) {
-      map.fitBounds(place.geometry.viewport);
-    }
-
-    // setSelectedPlace 를 통해 지정된 좌표를 marker에 반영하여 지도에 marker를 표시합니다.
-    marker.position = new google.maps.LatLng(lng, lat);
-  }, [map, place, marker, lng, lat]);
-
-  return null;
-};
 
 function Directions(props: {
   wayPoint?: WaypointType[];
