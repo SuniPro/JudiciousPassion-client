@@ -3,12 +3,12 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useBodyScrollBottomOver } from "../hooks/useWheel";
 import { css } from "@emotion/react";
 import React, { useState } from "react";
-import { LocationType } from "../model/location";
 import { ProfileImage } from "../components/profile/Profile";
 import theme from "../styles/theme";
 import { Modal, Tooltip } from "@mui/material";
 import {
   DefaultContentBoxWrapper,
+  EllipsisCase,
   MainFunctionContainer,
   PalletCircle,
 } from "../components/Layouts/Layouts";
@@ -25,23 +25,25 @@ import {
   ContentsDescription,
   ContentsFold,
   Date,
-  PlaceDescription,
   ProfileDescription,
   ProfileLine,
   TitleLine,
   UserLine,
   Username,
 } from "../components/Layouts/Feed";
+import {
+  useProportionHook,
+  useProportionSizeHook,
+} from "../hooks/useWindowHook";
 
 export function Tour() {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: ["tour"], // 캐싱 키
-      queryFn: getTourList, // 데이터 요청 함수
-      getNextPageParam: (lastPage, allPages) =>
-        lastPage.length < 5 ? null : allPages.length, // 다음 페이지 번호
-      initialPageParam: 0,
-    });
+  const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ["tour"], // 캐싱 키
+    queryFn: getTourList, // 데이터 요청 함수
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.length < 5 ? null : allPages.length, // 다음 페이지 번호
+    initialPageParam: 0,
+  });
 
   useBodyScrollBottomOver(fetchNextPage, isFetchingNextPage);
 
@@ -76,15 +78,13 @@ export function TourContentBox(props: {
   const { tour, fold, className } = props;
   const { windowWidth } = useWindowContext();
 
-  const [contentsFold, setContentsFold] = useState<boolean>(false);
+  const { size } = useProportionHook(windowWidth, 180, 630);
+  const mapSize = useProportionSizeHook(windowWidth, 600, 600, 630);
 
   const [placeModalOpen, setPlaceModalOpen] = useState(false);
   const [personalColorModalOpen, setPersonalColorModalOpen] = useState(false);
-  const [location, setLocation] = useState<LocationType>({
-    placeName: "",
-    longitude: "",
-    latitude: "",
-  });
+
+  const [contentsFold, setContentsFold] = useState<boolean>(false);
 
   return (
     <DefaultContentBoxWrapper className={className}>
@@ -96,9 +96,17 @@ export function TourContentBox(props: {
               {tour.insertId}
             </Username>
             <Tooltip title="클릭해서 위치를 확인하세요 !">
-              <PlaceDescription onClick={() => setPlaceModalOpen(true)}>
-                {tour.placeName}
-              </PlaceDescription>
+              <EllipsisCase
+                func={() => setPlaceModalOpen(true)}
+                width={size}
+                text={tour.placeName}
+                textAlign="left"
+                css={css`
+                  font-size: 60%;
+                  color: ${theme.colors.gray};
+                  cursor: pointer;
+                `}
+              />
             </Tooltip>
           </ProfileDescription>
         </UserLine>
@@ -127,16 +135,15 @@ export function TourContentBox(props: {
           </Date>
         </ContentsDescription>
       </ProfileLine>
-      <TitleLine css={css``}>
+      <TitleLine>
         <span>{tour.title}</span>
       </TitleLine>
-      {/*<Divider size={95} />*/}
-
       {fold ? null : (
         <>
           <div
             css={css`
-              width: 600px;
+              width: ${windowWidth}px;
+              max-width: 630px;
               display: flex;
               flex-direction: column;
               margin-bottom: 10px;
@@ -193,9 +200,10 @@ export function TourContentBox(props: {
       >
         <PlaceModal
           onClose={() => setPlaceModalOpen(false)}
-          locationState={setLocation}
           lat={tour.latitude}
           lng={tour.longitude}
+          size={mapSize.size}
+          type="view"
         />
       </Modal>
     </DefaultContentBoxWrapper>

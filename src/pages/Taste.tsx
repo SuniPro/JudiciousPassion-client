@@ -18,7 +18,6 @@ import { ImageCarousel } from "../components/Carousel/ImageCarousel";
 import { iso8601ToYYMMDDHHMM } from "../components/Date/DateFormatter";
 import { Modal, Tooltip } from "@mui/material";
 import { PersonalColorModal, PlaceModal } from "../Modal/Modal";
-import { LocationType } from "../model/location";
 import { useWindowContext } from "../context/WindowContext";
 import {
   Contents,
@@ -32,21 +31,27 @@ import {
   UserLine,
   Username,
 } from "../components/Layouts/Feed";
-import { useProportionHook } from "../hooks/useWindowHook";
+import {
+  useProportionHook,
+  useProportionSizeHook,
+} from "../hooks/useWindowHook";
 
 export function Taste() {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: ["taste"], // 캐싱 키
-      queryFn: getTasteList, // 데이터 요청 함수
-      getNextPageParam: (lastPage, allPages) =>
-        lastPage.length < 5 ? null : allPages.length, // 다음 페이지 번호
-      initialPageParam: 0,
-    });
+  const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: ["taste"], // 캐싱 키
+    queryFn: getTasteList, // 데이터 요청 함수
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.length < 5 ? null : allPages.length, // 다음 페이지 번호
+    initialPageParam: 0,
+  });
 
   useBodyScrollBottomOver(fetchNextPage, isFetchingNextPage);
 
   if (!data) return;
+
+  if (data.pages.length === 0) {
+    return <SkeletonContentBox />;
+  }
 
   return (
     <>
@@ -74,16 +79,12 @@ export function TasteContentBox(props: {
   const { windowWidth } = useWindowContext();
 
   const { size } = useProportionHook(windowWidth, 180, 630);
+  const mapSize = useProportionSizeHook(windowWidth, 600, 600, 630);
 
   const [placeModalOpen, setPlaceModalOpen] = useState(false);
   const [personalColorModalOpen, setPersonalColorModalOpen] = useState(false);
 
   const [contentsFold, setContentsFold] = useState<boolean>(false);
-  const [location, setLocation] = useState<LocationType>({
-    placeName: "",
-    longitude: "",
-    latitude: "",
-  });
 
   return (
     <DefaultContentBoxWrapper className={className}>
@@ -96,6 +97,7 @@ export function TasteContentBox(props: {
             </Username>
             <Tooltip title="클릭해서 위치를 확인하세요 !">
               <EllipsisCase
+                func={() => setPlaceModalOpen(true)}
                 width={size}
                 text={taste.placeName}
                 textAlign="left"
@@ -105,9 +107,6 @@ export function TasteContentBox(props: {
                   cursor: pointer;
                 `}
               />
-              {/*<PlaceDescription onClick={() => setPlaceModalOpen(true)}>*/}
-              {/*  */}
-              {/*</PlaceDescription>*/}
             </Tooltip>
           </ProfileDescription>
         </UserLine>
@@ -136,11 +135,9 @@ export function TasteContentBox(props: {
           </Date>
         </ContentsDescription>
       </ProfileLine>
-      <TitleLine css={css``}>
+      <TitleLine>
         <span>{taste.title}</span>
       </TitleLine>
-      {/*<Divider size={95} />*/}
-
       {fold ? null : (
         <>
           <div
@@ -203,9 +200,10 @@ export function TasteContentBox(props: {
       >
         <PlaceModal
           onClose={() => setPlaceModalOpen(false)}
-          locationState={setLocation}
           lat={taste.latitude}
           lng={taste.longitude}
+          size={mapSize.size}
+          type="view"
         />
       </Modal>
     </DefaultContentBoxWrapper>
