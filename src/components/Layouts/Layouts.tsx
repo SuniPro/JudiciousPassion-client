@@ -26,15 +26,20 @@ export const Container = styled.div`
   align-items: center;
 `;
 
-export const Divider = styled.p<{ direction?: boolean; size?: number }>(
-  ({ direction, size = 100 }) => css`
-    border-top: 1px solid ${theme.colors.whiteGray};
-    width: ${size}%;
+/** 구분선을 출력합니다. width 값은 %로 계산됩니다. */
+export const Divider = styled.p<{ direction?: boolean; width?: number }>(
+  ({ direction, width = 100 }) => css`
+    border-top: 1px solid ${theme.colors.secondary};
+    width: ${width}%;
   `,
 );
 
 export const ContentsAreaContainer = styled.div`
   width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 /**
@@ -111,11 +116,12 @@ export const TextArea = styled.span<{ width?: number; textAlign: string }>(
 
 export const PalletCircle = styled.div<{ backgroundColor: string }>(
   ({ backgroundColor }) => css`
-    width: 18px;
-    height: 18px;
+    width: 24px;
+    height: 24px;
     border-radius: ${theme.borderRadius.circle};
     border: ${theme.colors.white} 3px solid;
     box-shadow: ${theme.shadowStyle.default};
     background-color: ${backgroundColor};
+    box-sizing: border-box;
   `,
 );
