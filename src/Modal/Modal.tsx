@@ -16,19 +16,16 @@ import { useContentIconHook } from "../hooks/useContents";
 import { PlaceView } from "../components/Place/PlaceView";
 import { WaypointType } from "../model/SaunterType";
 
-function PlaceEditor(
-  props: {
-    onClose: () => void;
-    locationState?: React.Dispatch<React.SetStateAction<LocationType>>;
-    lat?: number;
-    lng?: number;
-    size?: { width: number; height: number };
-    type?: "view" | "editor";
-    wayPoint?: WaypointType[];
-    travelMode?: "BICYCLING" | "DRIVING" | "TRANSIT" | "WALKING";
-  },
-  ref: React.Ref<HTMLDivElement>,
-) {
+function PlaceEditor(props: {
+  onClose: () => void;
+  locationState?: React.Dispatch<React.SetStateAction<LocationType>>;
+  lat?: number;
+  lng?: number;
+  size?: { width: number; height: number };
+  type?: "view" | "editor";
+  wayPoint?: WaypointType[];
+  travelMode?: "BICYCLING" | "DRIVING" | "TRANSIT" | "WALKING";
+}) {
   useContentIconHook();
   const {
     onClose,

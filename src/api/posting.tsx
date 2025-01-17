@@ -5,6 +5,7 @@ import { ErrorNotify, SuccessNotify } from "../components/Alert/Alert";
 import { SaunterType } from "../model/SaunterType";
 import { TourType } from "../model/TourType";
 import { addTour } from "./tour";
+import { FileUploadType } from "../components/Editor/Editor";
 
 export const ApiConnector = (
   type: PostingType["type"],
@@ -28,10 +29,12 @@ export const ApiConnector = (
 
       addTaste(newData)
         .then((r) => {
-          const uploadPromises = data.imageUrl.map((image: Blob) =>
-            imageListUpload("taste", r.id?.toString()!, image).catch(() => {
-              ErrorNotify("포스팅 실패 !");
-            }),
+          const uploadPromises = data.imageUrl.map((image: FileUploadType) =>
+            imageListUpload("taste", r.id?.toString()!, image.file).catch(
+              () => {
+                ErrorNotify("포스팅 실패 !");
+              },
+            ),
           );
 
           // 모든 imageListUpload 작업 완료 후 실행

@@ -2,7 +2,9 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import theme from "../../styles/theme";
 import { ReactNode } from "react";
+import { useContentIconHook } from "../../hooks/useContents";
 
+/** feather를 기반으로 한 원형 버튼입니다. icon은 reactNode 혹은 "x" 형태로 feather 문자열을 받습니다.*/
 export function CircleButton(props: {
   className?: string;
   icon: ReactNode;
@@ -10,6 +12,7 @@ export function CircleButton(props: {
   isActive: boolean;
 }) {
   const { className, icon, func, isActive } = props;
+  useContentIconHook();
   return (
     <CircleButtonContainer
       className={className}
