@@ -1,6 +1,12 @@
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import theme from "../../styles/theme";
+import React from "react";
+
+export interface ExtentType {
+  width?: number;
+  height?: number;
+}
 
 export const PageContainer = styled.div<{ width: number }>(
   ({ width = 630 }) => css`
@@ -27,8 +33,8 @@ export const Container = styled.div`
 `;
 
 /** 구분선을 출력합니다. width 값은 %로 계산됩니다. */
-export const Divider = styled.p<{ direction?: boolean; width?: number }>(
-  ({ direction, width = 100 }) => css`
+export const Divider = styled.p<{ width?: number }>(
+  ({ width = 100 }) => css`
     border-top: 1px solid ${theme.colors.secondary};
     width: ${width}%;
   `,
@@ -40,6 +46,7 @@ export const ContentsAreaContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: 6rem;
 `;
 
 /**
@@ -48,7 +55,6 @@ export const ContentsAreaContainer = styled.div`
 export const MainFunctionContainer = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 5rem;
   width: 100%;
   height: 100%;
 `;
@@ -125,3 +131,42 @@ export const PalletCircle = styled.div<{ backgroundColor: string }>(
     box-sizing: border-box;
   `,
 );
+
+export function ModalHeader(props: {
+  leftMenu?: string;
+  leftFunc: any;
+  purpose: string;
+  rightMenu?: string;
+  rightFunc: any;
+}) {
+  const {
+    leftMenu = "취소",
+    leftFunc,
+    purpose,
+    rightFunc,
+    rightMenu = "확인",
+  } = props;
+  return (
+    <ModalHeaderContainer>
+      <span onClick={leftFunc}>{leftMenu}</span>
+      <span>{purpose}</span>
+      <span onClick={rightFunc}>{rightMenu}</span>
+    </ModalHeaderContainer>
+  );
+}
+
+export const ModalHeaderContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  padding: 10px 20px;
+  border-bottom: 1px solid ${theme.colors.secondary};
+  box-sizing: border-box;
+
+  span {
+    cursor: pointer;
+  }
+`;

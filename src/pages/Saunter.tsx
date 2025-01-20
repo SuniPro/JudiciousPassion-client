@@ -39,7 +39,7 @@ import {
   CarIcon,
   WalkIcon,
 } from "../components/FeatherIcon/Icons";
-import YouTube from "react-youtube";
+import { YoutubePlayer } from "../components/Youtube/Youtube";
 
 const SAUNTER_DUMMY: SaunterType[] = [
   {
@@ -96,15 +96,6 @@ export function SaunterContentBox(props: {
   const { size } = useProportionHook(windowWidth, 180, 630);
   const mediaSize = useProportionSizeHook(windowWidth, 630, 500, 630);
 
-  const youtubePlayer = () => {
-    if (!saunter.youtubeLink) return;
-
-    const urlParams = new URLSearchParams(new URL(saunter.youtubeLink).search);
-    const v = urlParams.get("v");
-
-    return <YouTube videoId={v} opts={mediaSize.size} />;
-  };
-
   const [placeModalOpen, setPlaceModalOpen] = useState(false);
   const [personalColorModalOpen, setPersonalColorModalOpen] = useState(false);
 
@@ -152,21 +143,19 @@ export function SaunterContentBox(props: {
                     stroke: ${theme.colors.gray};
                   }
                 `)}
-                <Tooltip title="클릭해서 위치를 확인하세요 !">
-                  <EllipsisCase
-                    width={size}
-                    text={saunter.placeName}
-                    textAlign="left"
-                    css={css`
-                      font-size: 70%;
-                      color: ${theme.colors.gray};
-                      cursor: pointer;
-                    `}
-                  />
-                  {/*<PlaceDescription onClick={() => setPlaceModalOpen(true)}>*/}
-                  {/*  */}
-                  {/*</PlaceDescription>*/}
-                </Tooltip>
+                <EllipsisCase
+                  width={size}
+                  text={saunter.placeName}
+                  textAlign="left"
+                  css={css`
+                    font-size: 70%;
+                    color: ${theme.colors.gray};
+                    cursor: pointer;
+                  `}
+                />
+                {/*<PlaceDescription onClick={() => setPlaceModalOpen(true)}>*/}
+                {/*  */}
+                {/*</PlaceDescription>*/}
               </div>
             </ProfileDescription>
           </UserLine>
@@ -214,7 +203,10 @@ export function SaunterContentBox(props: {
               `}
             >
               {saunter.youtubeLink ? (
-                youtubePlayer()
+                <YoutubePlayer
+                  link={saunter.youtubeLink}
+                  size={mediaSize.size}
+                />
               ) : (
                 <ImageCarousel
                   data={saunter}

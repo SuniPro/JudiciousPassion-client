@@ -280,12 +280,11 @@ function HeartIcon(props: {
         height={26}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        transform="18px 17.999500274658203px"
         viewBox="0 0 50 50" // 내부 좌표계를 확장
         preserveAspectRatio="xMidYMid meet" // 비율 유지하며 중앙 정렬
         css={css`
           position: relative;
-          transform: scale(0.6); // 80% 크기로 스케일링
+          transform: translate(18px, 18px) scale(0.6); // 80% 크기로 스케일링
           transform-origin: center; // 중심 기준
         `}
         {...props}

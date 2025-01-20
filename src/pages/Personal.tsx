@@ -10,8 +10,8 @@ import React, { useEffect, useState } from "react";
 import {
   EmailIcon,
   MapPinIcon,
-  MessageIcon,
   PhoneIcon,
+  SendIcon,
   UserCheckIcon,
   UserPlusIcon,
 } from "../components/FeatherIcon/Icons";
@@ -31,10 +31,13 @@ import { FeedCarousel } from "../components/Carousel/ImageCarousel";
 import { TourType } from "../model/TourType";
 import { TourContentBox } from "./Tour";
 import { useWindowContext } from "../context/WindowContext";
-import { useProportionHook } from "../hooks/useWindowHook";
+import {
+  useProportionHook,
+  useProportionSizeHook,
+} from "../hooks/useWindowHook";
 import { useContentIconHook } from "../hooks/useContents";
 
-const USER_CONNECT_FUNC = [MessageIcon, UserPlusIcon];
+const USER_CONNECT_FUNC = [SendIcon, UserPlusIcon];
 const USER_CERTIFY_LIST = [
   { icons: EmailIcon, description: "메일 인증 및 가입여부" },
   { icons: PhoneIcon, description: "휴대폰번호 인증" },
@@ -51,7 +54,8 @@ export function Personal() {
   const { user } = useUserContext();
   const { windowWidth } = useWindowContext();
 
-  const { size } = useProportionHook(windowWidth, 150, 630);
+  const { size } = useProportionHook(windowWidth, 120, 630);
+  const profileModalExtent = useProportionSizeHook(windowWidth, 400, 300, 630);
 
   const { data: tastes } = useQuery({
     queryKey: ["getTasteByInsertId", user],
@@ -87,13 +91,9 @@ export function Personal() {
   const personalColorOpacity = user.personalColor + "CC";
 
   return (
-    <Container
-      css={css`
-        margin-top: 6rem;
-      `}
-    >
+    <Container>
       <PersonalWrapper>
-        <ProfileBox>
+        <ProfileBox css={css``}>
           <ProfileImage
             name="suni"
             extentSize={{ width: size, height: size }}
@@ -246,6 +246,8 @@ export function Personal() {
             display: flex;
             flex-direction: row;
             gap: 20px;
+
+            font-family: ${theme.fontStyle.roboto};
           `}
         >
           <span>taste : {tastes?.length}</span>
@@ -280,6 +282,7 @@ export function Personal() {
           message={user.profileMessage}
           user={userState}
           onClose={() => setMessageModalOpen(false)}
+          size={profileModalExtent.size}
         />
       </Modal>
     </Container>
@@ -331,6 +334,8 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
+  width: 100%;
 `;
 
 const ProfileBox = styled.div`

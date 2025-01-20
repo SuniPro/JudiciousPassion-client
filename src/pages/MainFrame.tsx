@@ -18,21 +18,25 @@ import { Taste } from "./Taste";
 import { Tour } from "./Tour";
 import { Personal } from "./Personal";
 import { Saunter } from "./Saunter";
-
-// Carousel 에 첨부되는 미디어 파일들의 크기를 조정하기 위한 값입니다.
-export const MEDIA_SIZE_PADDING = 20;
+import { EditorModal } from "../components/Editor/Editor";
+import { Modal } from "@mui/material";
 
 export const MAIN_MENU_LIST: MainMenuType[] = [
-  { menu: "Taste", icon: FlatwareIcon, type: "taste", component: <Taste /> },
+  { menu: "TASTE", icon: FlatwareIcon, type: "taste", component: <Taste /> },
   {
-    menu: "Saunter",
+    menu: "WALK",
     icon: WbSunnyIcon,
     type: "saunter",
     component: <Saunter />,
   },
-  { menu: "Tour", icon: BeachAccessIcon, type: "tour", component: <Tour /> },
   {
-    menu: "Personal",
+    menu: "SPOT",
+    icon: BeachAccessIcon,
+    type: "tour",
+    component: <Tour />,
+  },
+  {
+    menu: "PERSONAL",
     icon: ManageAccountsIcon,
     type: "personal",
     component: <Personal />,
@@ -40,6 +44,7 @@ export const MAIN_MENU_LIST: MainMenuType[] = [
 ];
 export function MainFrame() {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [editorModalOpen, setEditorModalOpen] = useState(false);
 
   const { windowWidth, liRefs, slide1Ref, slide2Ref } =
     MainFrameComponent(selectedIndex);
@@ -84,7 +89,21 @@ export function MainFrame() {
       <ContentsAreaContainer>
         {MAIN_MENU_LIST[selectedIndex].component}
       </ContentsAreaContainer>
-      {windowWidth >= 760 ? <SideNav /> : <FooterNav />}
+      <Modal
+        open={editorModalOpen}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <EditorModal
+          onClose={() => setEditorModalOpen(false)}
+          type={MAIN_MENU_LIST[selectedIndex].type}
+        />
+      </Modal>
+      {windowWidth >= 760 ? (
+        <SideNav onEditor={() => setEditorModalOpen(true)} />
+      ) : (
+        <FooterNav onEditor={() => setEditorModalOpen(true)} />
+      )}
     </PageContainer>
   );
 }
@@ -102,6 +121,9 @@ const MainNavigationUL = styled.ul`
   justify-content: space-evenly;
 
   align-items: center;
+
+  font-family: ${theme.fontStyle.poppins};
+  font-weight: bold;
 
   @media ${theme.windowSize.small} {
     font-size: 70%;

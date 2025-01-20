@@ -11,7 +11,7 @@ import {
   HomeIcon,
   LogInIcon,
   LogOutIcon,
-  MessageIcon,
+  SendIcon,
   SettingsIcon,
 } from "../FeatherIcon/Icons";
 import { useWindowContext } from "../../context/WindowContext";
@@ -23,7 +23,7 @@ const transition = `${timing} ease all`;
 
 const NAV_MENU = [
   { icon: HomeIcon, link: "/", description: "홈" },
-  { icon: MessageIcon, link: "/", description: "톡" },
+  { icon: SendIcon, link: "/", description: "DM" },
   { icon: EditIcon, link: "posting", description: "작성" },
   { icon: HelpIcon, link: "/", description: "도움" },
   { icon: LogInIcon, link: "/", description: "로그인" },
@@ -37,7 +37,8 @@ const createGooeyEffect = (i: number) =>
     "100%": { transform: "scale(1, 1)" },
   });
 
-export function FooterNav() {
+export function FooterNav(props: { onEditor: () => void }) {
+  const { onEditor } = props;
   const { user } = useUserContext();
   const { windowWidth } = useWindowContext();
 
@@ -68,7 +69,7 @@ export function FooterNav() {
               width={listSize.width}
               height={listSize.height}
             >
-              <FooterNavLink href={item.link} className="navbar__link">
+              <FooterNavLink className="navbar__link" onClick={onEditor}>
                 {user && item.description === "로그인" ? (
                   <LogOutIcon />
                 ) : (
@@ -138,7 +139,6 @@ const FooterManuList = styled.li<{
       border-radius: ${theme.borderRadius.roundedBox};
       transition: ${timing} cubic-bezier(1, 0.2, 0.1, 1.2) all;
       background: ${theme.islandBlueTheme.menuAndToggleActiveColor};
-      animation: ${createGooeyEffect(index)} ${timing} ease-in-out;
     }
 
     &:hover:before {
@@ -161,7 +161,8 @@ const FooterNavLink = styled.a`
   }
 `;
 
-export function SideNav() {
+export function SideNav(props: { onEditor: () => void }) {
+  const { onEditor } = props;
   const { user } = useUserContext();
   useEffect(() => {
     // Feather Icons를 React에 적용
@@ -175,7 +176,13 @@ export function SideNav() {
           <ul className="navbar__menu">
             {NAV_MENU.map((item, index) => (
               <SideManuList key={`${index} + ${item}`} index={index}>
-                <SideNavLink href={item.link} className="navbar__link">
+                <SideNavLink
+                  className="navbar__link"
+                  onClick={() => {
+                    console.log("adsf");
+                    item.description === "작성" && onEditor;
+                  }}
+                >
                   {user && item.description === "로그인" ? (
                     <LogOutIcon />
                   ) : (
@@ -226,12 +233,6 @@ const SideNavbar = styled.nav`
     position: relative;
     padding: 0;
   }
-`;
-
-const SideNavHover = styled.div`
-  opacity: 0;
-  background: #ddd;
-  z-index: 1;
 `;
 
 const SideManuList = styled.li<{ index: number }>(

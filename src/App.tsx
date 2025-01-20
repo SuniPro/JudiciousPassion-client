@@ -8,7 +8,6 @@ import { Taste } from "./pages/Taste";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Personal } from "./pages/Personal";
 import { Toaster } from "react-hot-toast";
-import { EditorMainFrame } from "./pages/EditorMainFrame";
 import { UserContextProvider } from "./context/UserContext";
 import { SignForm } from "./components/Sign/Sign";
 import { Tour } from "./pages/Tour";
@@ -58,7 +57,6 @@ function App() {
                   <Route path="tour" element={<Tour />} />
                 </Route>
                 <Route path="manage">{/*  user chat */}</Route>
-                <Route path="posting" element={<EditorMainFrame />}></Route>
               </Routes>
               <Toaster />
             </BrowserRouter>

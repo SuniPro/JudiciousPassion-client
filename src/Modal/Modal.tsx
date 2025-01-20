@@ -9,7 +9,7 @@ import { CircleButton } from "../components/Layouts/Button";
 import { css } from "@emotion/react";
 import { SignForm } from "../components/Sign/Sign";
 import { User } from "../model/User";
-import { Divider } from "../components/Layouts/Layouts";
+import { ExtentType, ModalHeader } from "../components/Layouts/Layouts";
 import { profileMessageChange } from "../api/user";
 import { ErrorNotify, SuccessNotify } from "../components/Alert/Alert";
 import { useContentIconHook } from "../hooks/useContents";
@@ -41,26 +41,7 @@ function PlaceEditor(props: {
   return (
     <>
       <StyledModalBox width={size?.width} height={size?.height}>
-        <div
-          css={css`
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            width: 90%;
-            height: 50px;
-          `}
-        >
-          <TextFunction onClick={onClose}>취소</TextFunction>
-          <span>장소 확인</span>
-          <TextFunction onClick={onClose}>확인</TextFunction>
-        </div>
-        <Divider
-          css={css`
-            padding: 0;
-            margin: 0;
-          `}
-        />
+        <ModalHeader leftFunc={onClose} purpose="장소" rightFunc={onClose} />
         {type === "editor" ? (
           <SearchGoogle
             setLocation={locationState}
@@ -115,15 +96,8 @@ export const StyledModalBox = styled(Box)<{ width?: number; height?: number }>(
   `,
 );
 
-const TextFunction = styled.span`
-  cursor: pointer;
-`;
-
-function Sign(props: { onClose: () => void }, ref: React.Ref<HTMLDivElement>) {
+function Sign(props: { onClose: () => void }) {
   const { onClose } = props;
-
-  /** true 는 signUp, false 는 signIn 으로 규정합니다.*/
-  const [signType, setSignType] = useState<boolean>(false);
 
   return (
     <>
@@ -148,15 +122,10 @@ function Sign(props: { onClose: () => void }, ref: React.Ref<HTMLDivElement>) {
   );
 }
 
-export const SignModal = forwardRef(Sign);
-
-function PersonalColorView(
-  props: {
-    onClose: () => void;
-    color?: string | null;
-  },
-  ref: React.Ref<HTMLDivElement>,
-) {
+function PersonalColorView(props: {
+  onClose: () => void;
+  color?: string | null;
+}) {
   const { onClose, color } = props;
   return (
     <>
@@ -178,8 +147,9 @@ function ProfileMessageChange(props: {
   message?: string | null;
   user: User;
   onClose: () => void;
+  size?: ExtentType;
 }) {
-  const { message, onClose, user } = props;
+  const { message, onClose, user, size } = props;
 
   const [messageState, setMessageState] = useState<string>(message ?? "");
 
@@ -190,8 +160,8 @@ function ProfileMessageChange(props: {
           position: absolute;
           top: 50%;
           left: 50%;
-          width: 400px;
-          height: 300px;
+          width: ${size?.width}px;
+          height: ${size?.width}px;
           transform: translate(-50%, -50%);
           display: flex;
           flex-direction: column;
@@ -201,34 +171,16 @@ function ProfileMessageChange(props: {
           border-radius: ${theme.borderRadius.roundedBox};
         `}
       >
-        <div
-          css={css`
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            width: 90%;
-            height: 50px;
-          `}
-        >
-          <span onClick={onClose}>취소</span>
-          <span>상태메세지 변경</span>
-          <span
-            onClick={() => {
-              const updatedUser = { ...user, profileMessage: messageState };
-              profileMessageChange(updatedUser)
-                .then(() => SuccessNotify("작성 완료"), onClose)
-                .catch(() => ErrorNotify("서버 에러"));
-            }}
-          >
-            저장
-          </span>
-        </div>
-        <Divider
-          css={css`
-            padding: 0;
-            margin: 0;
-          `}
+        <ModalHeader
+          leftFunc={onClose}
+          purpose="상태메세지 변경"
+          rightFunc={() => {
+            const updatedUser = { ...user, profileMessage: messageState };
+            profileMessageChange(updatedUser)
+              .then(() => SuccessNotify("작성 완료"), onClose)
+              .catch(() => ErrorNotify("서버 에러"));
+          }}
+          rightMenu="저장"
         />
         <textarea
           onChange={(e) => setMessageState(e.target.value)}
@@ -249,3 +201,38 @@ function ProfileMessageChange(props: {
 }
 
 export const ProfileMessageChangeModal = forwardRef(ProfileMessageChange);
+
+function YoutubeLinkInsert(props: {
+  size?: { width: number; height: number };
+  onClose: () => void;
+  setYoutubeLink: React.Dispatch<React.SetStateAction<string>>;
+}) {
+  const { size, onClose, setYoutubeLink } = props;
+  return (
+    <StyledModalBox width={size?.width} height={size?.height}>
+      <ModalHeader
+        leftFunc={() => {
+          setYoutubeLink("");
+          onClose();
+        }}
+        purpose="Youtube Link"
+        rightFunc={onClose}
+        rightMenu="저장"
+      />
+      <textarea
+        onChange={(e) => setYoutubeLink(e.target.value)}
+        css={css`
+          width: 98%;
+          height: 100%;
+
+          border-radius: ${theme.borderRadius.roundedBox};
+          border: none;
+          outline: none;
+          resize: none;
+        `}
+      />
+    </StyledModalBox>
+  );
+}
+
+export const YoutubeLinkInsertModal = forwardRef(YoutubeLinkInsert);
