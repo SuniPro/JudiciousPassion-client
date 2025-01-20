@@ -95,19 +95,17 @@ export function TourContentBox(props: {
             <Username color={tour.personalColor ?? theme.colors.black}>
               {tour.insertId}
             </Username>
-            <Tooltip title="클릭해서 위치를 확인하세요 !">
-              <EllipsisCase
-                func={() => setPlaceModalOpen(true)}
-                width={size}
-                text={tour.placeName}
-                textAlign="left"
-                css={css`
-                  font-size: 60%;
-                  color: ${theme.colors.gray};
-                  cursor: pointer;
-                `}
-              />
-            </Tooltip>
+            <EllipsisCase
+              func={() => setPlaceModalOpen(true)}
+              width={size}
+              text={tour.placeName}
+              textAlign="left"
+              css={css`
+                font-size: 60%;
+                color: ${theme.colors.gray};
+                cursor: pointer;
+              `}
+            />
           </ProfileDescription>
         </UserLine>
         <ContentsDescription>

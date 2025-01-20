@@ -78,7 +78,7 @@ export function TasteContentBox(props: {
   const { taste, fold, className } = props;
   const { windowWidth } = useWindowContext();
 
-  const { size } = useProportionHook(windowWidth, 180, 630);
+  const { size } = useProportionHook(windowWidth, 280, 630);
   const mapSize = useProportionSizeHook(windowWidth, 600, 600, 630);
 
   const [placeModalOpen, setPlaceModalOpen] = useState(false);
@@ -95,19 +95,17 @@ export function TasteContentBox(props: {
             <Username color={taste.personalColor ?? theme.colors.black}>
               {taste.insertId}
             </Username>
-            <Tooltip title="클릭해서 위치를 확인하세요 !">
-              <EllipsisCase
-                func={() => setPlaceModalOpen(true)}
-                width={size}
-                text={taste.placeName}
-                textAlign="left"
-                css={css`
-                  font-size: 60%;
-                  color: ${theme.colors.gray};
-                  cursor: pointer;
-                `}
-              />
-            </Tooltip>
+            <EllipsisCase
+              func={() => setPlaceModalOpen(true)}
+              width={size}
+              text={taste.placeName}
+              textAlign="left"
+              css={css`
+                font-size: 60%;
+                color: ${theme.colors.gray};
+                cursor: pointer;
+              `}
+            />
           </ProfileDescription>
         </UserLine>
         <ContentsDescription>

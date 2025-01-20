@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { LocationType } from "../model/location";
 import * as feather from "feather-icons";
 
@@ -16,7 +16,5 @@ export function useContentsFunction() {
 
 /** data-feature 을 통해 출력되는 아이콘을 렌더링합니다. */
 export function useContentIconHook() {
-  useEffect(() => {
-    feather.replace();
-  }, []);
+  feather.replace();
 }

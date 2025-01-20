@@ -1,18 +1,21 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-color-palette/css";
-import { Container, PalletCircle } from "../Layouts/Layouts";
+import { ModalHeader, PalletCircle } from "../Layouts/Layouts";
 import { css } from "@emotion/react";
 import theme from "../../styles/theme";
 import styled from "@emotion/styled";
 import { PostingType } from "../../model/DynamicTypeExtend";
 import { Modal } from "@mui/material";
-import { PlaceModal } from "../../Modal/Modal";
+import {
+  PlaceModal,
+  StyledModalBox,
+  YoutubeLinkInsertModal,
+} from "../../Modal/Modal";
 import { LocationType } from "../../model/location";
 import { ApiConnector } from "../../api/posting";
-import { useNavigate } from "react-router-dom";
 import { ColorPicker, useColor } from "react-color-palette";
 import { useUserContext } from "../../context/UserContext";
 import { ErrorNotify } from "../Alert/Alert";
@@ -23,6 +26,8 @@ import {
 import { useWindowContext } from "../../context/WindowContext";
 import { CircleButton } from "../Layouts/Button";
 import { ProfileImage } from "../profile/Profile";
+import { useContentIconHook } from "../../hooks/useContents";
+import { YoutubePlayer } from "../Youtube/Youtube";
 
 export interface FileUploadType {
   id: number;
@@ -71,16 +76,20 @@ const formats = [
   "align",
 ];
 
-export function Editor(props: { type: PostingType["type"] }) {
+export function Editor(props: {
+  type: PostingType["type"];
+  onClose: () => void;
+  size?: { width: number; height: number };
+}) {
+  useContentIconHook();
+  const { type, onClose } = props;
   const { user } = useUserContext();
   const { windowWidth } = useWindowContext();
 
   const [contents, setContents] = useState("");
-  const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [selectedFile, setSelectedFile] = useState<FileUploadType[]>([]);
   const [color, setColor] = useColor(theme.colors.black);
-  const [paletteOpen, setPaletteOpen] = useState(false);
 
   const [location, setLocation] = useState<LocationType>({
     placeName: "",
@@ -88,9 +97,20 @@ export function Editor(props: { type: PostingType["type"] }) {
     latitude: 0,
   });
 
-  const navigate = useNavigate();
+  const [youtubeLink, setYouTubeLink] = useState("");
+
+  const [open, setOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [youtubeModalOpen, setYoutubeModalOOpen] = useState(false);
+
   const { size } = useProportionHook(windowWidth, 600, 630);
-  const mediaSize = useProportionSizeHook(windowWidth, 630, 500, 630);
+  const mediaExtent = useProportionSizeHook(windowWidth, 630, 500, 630);
+  const youtubeLinkModalExtent = useProportionSizeHook(
+    windowWidth,
+    400,
+    300,
+    630,
+  );
 
   const handleProcedureContentChange = (content: any) => {
     setContents(content);
@@ -105,7 +125,7 @@ export function Editor(props: { type: PostingType["type"] }) {
     fileUrl: ArrayBuffer | string | null,
   ): string => {
     if (typeof fileUrl === "string") return fileUrl; // 문자열인 경우 그대로 반환
-    if (fileUrl === null) return ""; // null인 경우 빈 문자열 반환
+    if (fileUrl === null) return ""; // null 인 경우 빈 문자열 반환
     return btoa(String.fromCharCode(...new Uint8Array(fileUrl))); // ArrayBuffer 변환
   };
 
@@ -114,27 +134,23 @@ export function Editor(props: { type: PostingType["type"] }) {
       ErrorNotify("제목을 입력해주세요.");
       return;
     }
-    ApiConnector(
-      props.type,
-      {
-        contents,
-        title,
-        location,
-        imageUrl: selectedFile,
-        personalColor: color.hex,
-        insertId: user?.username,
-      },
-      navigate(`/${props.type}`),
-    );
+    ApiConnector(type, {
+      contents,
+      title,
+      location,
+      imageUrl: selectedFile,
+      personalColor: color.hex,
+      insertId: user?.username,
+      youtubeLink: youtubeLink,
+    });
   };
 
   return (
-    <Container
+    <StyledModalBox
+      width={size}
       css={css`
-        transform: translateX(0%);
         width: ${size}px;
-        margin-top: 8rem;
-
+        height: auto;
         border: 1px solid ${theme.islandBlueTheme.secondary};
         border-radius: ${theme.borderRadius.roundedBox};
 
@@ -158,23 +174,12 @@ export function Editor(props: { type: PostingType["type"] }) {
         }
       `}
     >
-      <div
-        css={css`
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: center;
-          width: 100%;
-          height: 50px;
-          padding: 10px 20px;
-          border-bottom: 1px solid ${theme.colors.secondary};
-          box-sizing: border-box;
-        `}
-      >
-        <span>취소</span>
-        <span>작성</span>
-        <span>확인</span>
-      </div>
+      <ModalHeader
+        leftFunc={onClose}
+        purpose="작성"
+        rightMenu="저장"
+        rightFunc={eventHandler}
+      />
       <section
         css={css`
           padding: 10px 10px 0 10px;
@@ -218,7 +223,6 @@ export function Editor(props: { type: PostingType["type"] }) {
               }
             />
             <TitleWriteBox
-              isActive={title.length !== 0}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="제목을 입력하세요."
               onClick={() => setPaletteOpen(false)}
@@ -228,7 +232,7 @@ export function Editor(props: { type: PostingType["type"] }) {
         </div>
         <section
           css={css`
-            // 화면 전체 크기를 초과하지 않고 스크롤을 유지하기 위해 width를 지정,
+            // 화면 전체 크기를 초과하지 않고 스크롤을 유지하기 위해 width 를 지정,
             // translateX와 margin 값을 제거하기 위해 25를 추가하였음.
             width: ${size - 25}px;
             display: flex;
@@ -242,8 +246,31 @@ export function Editor(props: { type: PostingType["type"] }) {
             margin: 5px 0;
           `}
         >
+          {youtubeLink.length !== 0 && (
+            <>
+              <YoutubePlayer
+                link={youtubeLink}
+                size={{ width: 150, height: 150 }}
+              />
+              <CircleButton
+                func={() => setYouTubeLink("")}
+                icon="x"
+                isActive={false}
+                css={css`
+                  position: absolute;
+                  width: 30px;
+                  height: 30px;
+                  opacity: 0.5;
+                  background: ${theme.colors.black};
+
+                  transform: translateX(380%) translateY(20%);
+                `}
+              />
+            </>
+          )}
           {selectedFile.map((file, index) => (
             <div
+              key={index}
               css={css`
                 position: relative;
               `}
@@ -327,6 +354,27 @@ export function Editor(props: { type: PostingType["type"] }) {
             }}
             reactiveColor={color.hex}
           />
+          <label
+            onClick={() => {
+              setYoutubeModalOOpen(true);
+            }}
+            css={css`
+              color: ${location.placeName.length === 0
+                ? theme.colors.secondary
+                : color.hex === theme.colors.black
+                  ? theme.islandBlueTheme.activeBackgroundColor
+                  : theme.colors.black};
+
+              transition: color 0.5s ease-in-out;
+            `}
+          >
+            <i
+              data-feather="youtube"
+              css={css`
+                cursor: pointer;
+              `}
+            />
+          </label>
           <InfoLine>
             <PalletCircle
               onClick={() => {
@@ -357,34 +405,36 @@ export function Editor(props: { type: PostingType["type"] }) {
           aria-describedby="modal-modal-description"
           children={
             <PlaceModal
-              size={mediaSize.size}
+              size={mediaExtent.size}
               onClose={() => setOpen(false)}
               locationState={setLocation}
               type="editor"
             />
           }
         />
+        <Modal
+          open={youtubeModalOpen}
+          onClose={() => setYoutubeModalOOpen(false)}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+          children={
+            <YoutubeLinkInsertModal
+              size={youtubeLinkModalExtent.size}
+              onClose={() => setYoutubeModalOOpen(false)}
+              setYoutubeLink={setYouTubeLink}
+            />
+          }
+        />
       </section>
-    </Container>
+    </StyledModalBox>
   );
 }
-
-const ButtonContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-`;
 
 function ImageUpload(props: {
   selectedFileState: SelectedFileStateType;
   reactiveColor: string;
 }) {
-  const { selectedFile, setSelectedFile } = props.selectedFileState;
+  const { setSelectedFile } = props.selectedFileState;
 
   const InputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // --For Multiple File Input
@@ -395,17 +445,21 @@ function ImageUpload(props: {
       let reader = new FileReader();
       let file = e.target.files[i];
 
-      reader.onloadend = () => {
-        setSelectedFile((prev) => [
-          ...prev,
-          {
-            id: i,
-            file: file,
-            fileUrl: reader.result,
-          },
-        ]);
-      };
-      reader.readAsDataURL(file);
+      if (images.length <= IMAGE_UPLOAD_LIMIT) {
+        reader.onloadend = () => {
+          setSelectedFile((prev) => [
+            ...prev,
+            {
+              id: i,
+              file: file,
+              fileUrl: reader.result,
+            },
+          ]);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        ErrorNotify(`이미지는 최대 ${IMAGE_UPLOAD_LIMIT}개 업로드 가능합니다.`);
+      }
     }
   };
 
@@ -430,8 +484,8 @@ function ImageUpload(props: {
   );
 }
 
-const TitleWriteBox = styled.input<{ isActive: boolean; color: string }>(
-  ({ isActive, color }) => css`
+const TitleWriteBox = styled.input<{ color: string }>(
+  ({ color }) => css`
     border-radius: ${theme.borderRadius.softBox};
     border: none;
     width: 90%;
@@ -469,23 +523,6 @@ const StyledImage = styled.img`
   object-fit: cover;
 `;
 
-const ImageCase = styled.label<{ borderColor: string }>(
-  ({ borderColor }) => css`
-    width: 90px;
-    height: 90px;
-    border: 1px solid ${borderColor};
-    border-radius: ${theme.borderRadius.roundedBox};
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-
-    transition: border 0.5s ease-in-out;
-  `,
-);
-
 const StyledInput = styled.input<{ width?: number; isView?: boolean }>(
   ({ width = 100, isView = true }) => css`
     width: ${width}%;
@@ -504,8 +541,8 @@ const ColorPickerCase = styled(ColorPicker)`
 `;
 
 const InfoLine = styled.div<{ width?: number }>(
-  ({ width }) => css`
-    width: 100%;
+  ({ width = 100 }) => css`
+    width: ${width}%;
     margin-bottom: 8px;
     display: flex;
     flex-direction: row;
@@ -518,4 +555,15 @@ const InfoLine = styled.div<{ width?: number }>(
       transform: translateX(0) translateY(-55%);
     }
   `,
+);
+
+export const EditorModal = forwardRef(
+  (
+    props: {
+      type: PostingType["type"];
+      onClose: () => void;
+      size?: { width: number; height: number };
+    },
+    _ref,
+  ) => <Editor {...props} />,
 );
