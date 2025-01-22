@@ -10,11 +10,11 @@ import styled from "@emotion/styled";
 import { PostingType } from "../../model/DynamicTypeExtend";
 import { Modal } from "@mui/material";
 import {
-  PlaceModal,
+  SaunterWaypointInsertModal,
   StyledModalBox,
   YoutubeLinkInsertModal,
 } from "../../Modal/Modal";
-import { LocationType } from "../../model/location";
+import { LocationWayPointType } from "../../model/location";
 import { ApiConnector } from "../../api/posting";
 import { ColorPicker, useColor } from "react-color-palette";
 import { useUserContext } from "../../context/UserContext";
@@ -81,21 +81,18 @@ export function Editor(props: {
   onClose: () => void;
   size?: { width: number; height: number };
 }) {
-  useContentIconHook();
   const { type, onClose } = props;
   const { user } = useUserContext();
   const { windowWidth } = useWindowContext();
+  useContentIconHook();
 
   const [contents, setContents] = useState("");
   const [title, setTitle] = useState("");
   const [selectedFile, setSelectedFile] = useState<FileUploadType[]>([]);
   const [color, setColor] = useColor(theme.colors.black);
 
-  const [location, setLocation] = useState<LocationType>({
-    placeName: "",
-    longitude: 0,
-    latitude: 0,
-  });
+  const [waypoint, setWaypoint] = useState<LocationWayPointType[]>([]);
+  const startPoint = waypoint.find((point) => point.WaypointType === "start");
 
   const [youtubeLink, setYouTubeLink] = useState("");
 
@@ -104,7 +101,12 @@ export function Editor(props: {
   const [youtubeModalOpen, setYoutubeModalOOpen] = useState(false);
 
   const { size } = useProportionHook(windowWidth, 600, 630);
-  const mediaExtent = useProportionSizeHook(windowWidth, 630, 500, 630);
+  const waypointInsertAreaExtent = useProportionSizeHook(
+    windowWidth,
+    400,
+    400,
+    630,
+  );
   const youtubeLinkModalExtent = useProportionSizeHook(
     windowWidth,
     400,
@@ -132,6 +134,9 @@ export function Editor(props: {
   const eventHandler = () => {
     if (title.length <= 0) {
       ErrorNotify("제목을 입력해주세요.");
+      return;
+    } else if (waypoint.length < 2) {
+      ErrorNotify("출발지와 목적지를 입력하세요.");
       return;
     }
     ApiConnector(type, {
@@ -212,15 +217,9 @@ export function Editor(props: {
             <StyledInput
               onFocus={() => setOpen(true)}
               width={90}
-              value={location.placeName}
+              value={startPoint?.placeName}
               type="text"
               readOnly
-              onChange={(e) =>
-                setLocation((prev) => ({
-                  ...prev,
-                  placeName: e.target.value,
-                }))
-              }
             />
             <TitleWriteBox
               onChange={(e) => setTitle(e.target.value)}
@@ -331,12 +330,11 @@ export function Editor(props: {
               setOpen(true);
             }}
             css={css`
-              color: ${location.placeName.length === 0
+              color: ${waypoint.length === 0
                 ? theme.colors.secondary
                 : color.hex === theme.colors.black
                   ? theme.islandBlueTheme.activeBackgroundColor
                   : theme.colors.black};
-
               transition: color 0.5s ease-in-out;
             `}
           >
@@ -347,19 +345,36 @@ export function Editor(props: {
               `}
             />
           </label>
-          <ImageUpload
-            selectedFileState={{
-              selectedFile,
-              setSelectedFile,
-            }}
-            reactiveColor={color.hex}
-          />
           <label
             onClick={() => {
-              setYoutubeModalOOpen(true);
+              if (youtubeLink.length !== 0) {
+                ErrorNotify("Youtube 첨부 시, 이미지를 추가할 수 없습니다.");
+              }
+            }}
+          >
+            <ImageUpload
+              selectedFileState={{
+                selectedFile,
+                setSelectedFile,
+              }}
+              reactiveColor={
+                color.hex === theme.colors.black
+                  ? theme.islandBlueTheme.menuAndToggleActiveColor
+                  : color.hex
+              }
+              disable={youtubeLink.length !== 0}
+            />
+          </label>
+          <label
+            onClick={() => {
+              if (selectedFile.length === 0) {
+                setYoutubeModalOOpen(true);
+              } else {
+                ErrorNotify("이미지 첨부 시, Youtube를 추가할 수 없습니다.");
+              }
             }}
             css={css`
-              color: ${location.placeName.length === 0
+              color: ${youtubeLink.length === 0
                 ? theme.colors.secondary
                 : color.hex === theme.colors.black
                   ? theme.islandBlueTheme.activeBackgroundColor
@@ -404,11 +419,13 @@ export function Editor(props: {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
           children={
-            <PlaceModal
-              size={mediaExtent.size}
+            <SaunterWaypointInsertModal
+              size={waypointInsertAreaExtent.size}
               onClose={() => setOpen(false)}
-              locationState={setLocation}
-              type="editor"
+              setWaypoint={setWaypoint}
+              css={css`
+                height: auto;
+              `}
             />
           }
         />
@@ -433,8 +450,10 @@ export function Editor(props: {
 function ImageUpload(props: {
   selectedFileState: SelectedFileStateType;
   reactiveColor: string;
+  disable?: boolean;
 }) {
-  const { setSelectedFile } = props.selectedFileState;
+  const { disable, reactiveColor } = props;
+  const { selectedFile, setSelectedFile } = props.selectedFileState;
 
   const InputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // --For Multiple File Input
@@ -465,18 +484,24 @@ function ImageUpload(props: {
 
   return (
     <ImageUploaderContainer>
-      <input
-        type="file"
-        id="fileupload"
-        className="file-upload-input"
-        onChange={(e) => InputChange(e)}
-        multiple
-      />
+      {disable ? (
+        <></>
+      ) : (
+        <input
+          type="file"
+          id="fileupload"
+          className="file-upload-input"
+          onChange={(e) => InputChange(e)}
+          multiple
+        />
+      )}
       <label htmlFor="fileupload">
         <i
           data-feather="image"
           css={css`
-            color: ${theme.colors.gray};
+            color: ${selectedFile.length === 0
+              ? theme.colors.gray
+              : reactiveColor};
           `}
         />
       </label>
@@ -509,9 +534,6 @@ const ImageUploaderContainer = styled.div`
 
   gap: 10px;
 
-  svg {
-    color: ${theme.colors.secondary};
-  }
   input {
     display: none;
   }
