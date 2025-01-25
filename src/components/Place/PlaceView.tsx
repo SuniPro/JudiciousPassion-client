@@ -27,7 +27,7 @@ export function PlaceView(props: {
   // @ts-ignore
   const API_KEY = import.meta.env.VITE_GOOGLE_MAP_KEY_DATA;
   const startPoint = wayPoint?.find(
-    (wayPoint) => wayPoint.WaypointType === "start",
+    (wayPoint) => wayPoint.waypointType === "start",
   );
 
   return (
@@ -63,7 +63,6 @@ function Directions(props: {
 }) {
   const { wayPoint, travelMode } = props;
 
-  console.log(wayPoint, travelMode);
   const map = useMap();
   const routesLibrary = useMapsLibrary("routes");
   const [directionsService, setDirectionsService] =
@@ -88,13 +87,13 @@ function Directions(props: {
   useEffect(() => {
     if (!directionsService || !directionsRenderer || !wayPoint) return;
     const startCoordinate: WaypointType = wayPoint.find(
-      (wayPoint) => wayPoint.WaypointType === "start",
+      (wayPoint) => wayPoint.waypointType === "start",
     )!;
-    const stopCoordinate: WaypointType[] = wayPoint.filter(
-      (wayPoint) => wayPoint.WaypointType === "stop",
-    )!;
+    const stopCoordinate: WaypointType[] = wayPoint
+      .filter((wayPoint) => wayPoint.waypointType === "stop")
+      .sort((a, b) => a.orderIndex - b.orderIndex)!;
     const endCoordinate: WaypointType = wayPoint.find(
-      (wayPoint) => wayPoint.WaypointType === "end",
+      (wayPoint) => wayPoint.waypointType === "end",
     )!;
 
     const tryTravelModes = async (
@@ -153,11 +152,6 @@ function Directions(props: {
       .catch((error) => {
         console.error("Failed to find a valid route:", error.message);
       });
-
-    return () => {
-      directionsRenderer.setDirections(null); // 경로 초기화
-      directionsRenderer.setMap(null); // 렌더링 초기화
-    };
   }, [directionsService, directionsRenderer, wayPoint, travelMode]);
 
   // Update direction route
@@ -170,23 +164,23 @@ function Directions(props: {
 
   return (
     <div className="directions">
-      <h2>{selected.summary}</h2>
-      <p>
-        {leg.start_address.split(",")[0]} to {leg.end_address.split(",")[0]}
-      </p>
-      <p>Distance: {leg.distance?.text}</p>
-      <p>Duration: {leg.duration?.text}</p>
+      {/*<h2>{selected.summary}</h2>*/}
+      {/*<p>*/}
+      {/*  {leg.start_address.split(",")[0]} to {leg.end_address.split(",")[0]}*/}
+      {/*</p>*/}
+      {/*<p>Distance: {leg.distance?.text}</p>*/}
+      {/*<p>Duration: {leg.duration?.text}</p>*/}
 
-      <h2>Other Routes</h2>
-      <ul>
-        {routes?.map((route, index) => (
-          <li key={route.summary}>
-            <button onClick={() => setRouteIndex(index)}>
-              {route.summary}
-            </button>
-          </li>
-        ))}
-      </ul>
+      {/*<h2>Other Routes</h2>*/}
+      {/*<ul>*/}
+      {/*  {routes?.map((route, index) => (*/}
+      {/*    <li key={route.summary}>*/}
+      {/*      <button onClick={() => setRouteIndex(index)}>*/}
+      {/*        {route.summary}*/}
+      {/*      </button>*/}
+      {/*    </li>*/}
+      {/*  ))}*/}
+      {/*</ul>*/}
     </div>
   );
 }

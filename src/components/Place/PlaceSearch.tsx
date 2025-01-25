@@ -32,8 +32,8 @@ export function SearchGoogle(props: {
       if (!setLocation) return;
       setLocation({
         placeName: selectedPlace.formatted_address ?? "",
-        longitude: selectedPlace.geometry.location.lat(),
-        latitude: selectedPlace.geometry.location.lng(),
+        longitude: selectedPlace.geometry.location.lng(),
+        latitude: selectedPlace.geometry.location.lat(),
       });
     }
     if (!marker) return;

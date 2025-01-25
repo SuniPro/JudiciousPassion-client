@@ -69,7 +69,14 @@ export function FooterNav(props: { onEditor: () => void }) {
               width={listSize.width}
               height={listSize.height}
             >
-              <FooterNavLink className="navbar__link" onClick={onEditor}>
+              <FooterNavLink
+                className="navbar__link"
+                onClick={() => {
+                  if (item.description === "작성") {
+                    onEditor();
+                  }
+                }}
+              >
                 {user && item.description === "로그인" ? (
                   <LogOutIcon />
                 ) : (
@@ -179,8 +186,9 @@ export function SideNav(props: { onEditor: () => void }) {
                 <SideNavLink
                   className="navbar__link"
                   onClick={() => {
-                    console.log("adsf");
-                    item.description === "작성" && onEditor;
+                    if (item.description === "작성") {
+                      onEditor();
+                    }
                   }}
                 >
                   {user && item.description === "로그인" ? (
