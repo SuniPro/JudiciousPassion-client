@@ -23,5 +23,5 @@ export interface WaypointType {
   latitude: number;
   longitude: number;
   orderIndex: number;
-  WaypointType: "start" | "stop" | "end";
+  waypointType: "start" | "stop" | "end";
 }

@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef, useEffect, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-color-palette/css";
@@ -10,11 +10,12 @@ import styled from "@emotion/styled";
 import { PostingType } from "../../model/DynamicTypeExtend";
 import { Modal } from "@mui/material";
 import {
+  PlaceModal,
   SaunterWaypointInsertModal,
   StyledModalBox,
   YoutubeLinkInsertModal,
 } from "../../Modal/Modal";
-import { LocationWayPointType } from "../../model/location";
+import { LocationType, LocationWayPointType } from "../../model/location";
 import { ApiConnector } from "../../api/posting";
 import { ColorPicker, useColor } from "react-color-palette";
 import { useUserContext } from "../../context/UserContext";
@@ -91,8 +92,16 @@ export function Editor(props: {
   const [selectedFile, setSelectedFile] = useState<FileUploadType[]>([]);
   const [color, setColor] = useColor(theme.colors.black);
 
+  const [location, setLocation] = useState<LocationType>({
+    placeName: "대한민국 서울특별시 용산구 한강대로23길 55",
+    latitude: 37.314694,
+    longitude: 126.575308,
+  });
   const [waypoint, setWaypoint] = useState<LocationWayPointType[]>([]);
-  const startPoint = waypoint.find((point) => point.WaypointType === "start");
+  const startPoint = waypoint.find((point) => point.waypointType === "start");
+  useEffect(() => {
+    console.log(waypoint);
+  }, [waypoint]);
 
   const [youtubeLink, setYouTubeLink] = useState("");
 
@@ -101,18 +110,9 @@ export function Editor(props: {
   const [youtubeModalOpen, setYoutubeModalOOpen] = useState(false);
 
   const { size } = useProportionHook(windowWidth, 600, 630);
-  const waypointInsertAreaExtent = useProportionSizeHook(
-    windowWidth,
-    400,
-    400,
-    630,
-  );
-  const youtubeLinkModalExtent = useProportionSizeHook(
-    windowWidth,
-    400,
-    300,
-    630,
-  );
+  const placeModalExtent = useProportionSizeHook(windowWidth, 600, 600, 630);
+  const waypointModalExtent = useProportionSizeHook(windowWidth, 400, 400, 630);
+  const youtubeModalExtent = useProportionSizeHook(windowWidth, 400, 300, 630);
 
   const handleProcedureContentChange = (content: any) => {
     setContents(content);
@@ -413,22 +413,38 @@ export function Editor(props: {
             )}
           </InfoLine>
         </section>
-        <Modal
-          open={open}
-          onClose={() => setOpen(false)}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-          children={
-            <SaunterWaypointInsertModal
-              size={waypointInsertAreaExtent.size}
-              onClose={() => setOpen(false)}
-              setWaypoint={setWaypoint}
-              css={css`
-                height: auto;
-              `}
-            />
-          }
-        />
+        {type !== "saunter" ? (
+          <Modal
+            open={open}
+            onClose={() => setOpen(false)}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            children={
+              <PlaceModal
+                size={placeModalExtent.size}
+                onClose={() => setOpen(false)}
+                setLocation={setLocation}
+              />
+            }
+          />
+        ) : (
+          <Modal
+            open={open}
+            onClose={() => setOpen(false)}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            children={
+              <SaunterWaypointInsertModal
+                size={waypointModalExtent.size}
+                onClose={() => setOpen(false)}
+                waypointState={{ waypoint, setWaypoint }}
+                css={css`
+                  height: auto;
+                `}
+              />
+            }
+          />
+        )}
         <Modal
           open={youtubeModalOpen}
           onClose={() => setYoutubeModalOOpen(false)}
@@ -436,7 +452,7 @@ export function Editor(props: {
           aria-describedby="modal-modal-description"
           children={
             <YoutubeLinkInsertModal
-              size={youtubeLinkModalExtent.size}
+              size={youtubeModalExtent.size}
               onClose={() => setYoutubeModalOOpen(false)}
               setYoutubeLink={setYouTubeLink}
             />

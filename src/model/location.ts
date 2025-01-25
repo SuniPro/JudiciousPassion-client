@@ -5,9 +5,9 @@ export interface LocationType {
 }
 
 export interface LocationWayPointType {
-  orderIndex: number;
+  orderIndex?: number;
   placeName: string;
   latitude: number;
   longitude: number;
-  WaypointType: "start" | "stop" | "end";
+  waypointType: "start" | "stop" | "end";
 }

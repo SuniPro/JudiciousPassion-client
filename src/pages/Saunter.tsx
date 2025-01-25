@@ -57,7 +57,7 @@ const SAUNTER_DUMMY: SaunterType[] = [
       {
         id: 1,
         saunterId: 1,
-        WaypointType: "start",
+        waypointType: "start",
         latitude: 37.5288539,
         longitude: 126.9640447,
         orderIndex: 1,
@@ -65,7 +65,7 @@ const SAUNTER_DUMMY: SaunterType[] = [
       {
         id: 3,
         saunterId: 1,
-        WaypointType: "end",
+        waypointType: "end",
         latitude: 37.6479302,
         longitude: 127.0339708,
         orderIndex: 3,
@@ -261,11 +261,11 @@ export function SaunterContentBox(props: {
           <PlaceModal
             onClose={() => setPlaceModalOpen(false)}
             lat={
-              saunter.waypoints.find((route) => route.WaypointType === "start")
+              saunter.waypoints.find((route) => route.waypointType === "start")
                 ?.latitude
             }
             lng={
-              saunter.waypoints.find((route) => route.WaypointType === "start")
+              saunter.waypoints.find((route) => route.waypointType === "start")
                 ?.longitude
             }
             size={mediaSize.size}

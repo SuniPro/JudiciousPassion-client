@@ -2,7 +2,6 @@ import { PostingType } from "../model/DynamicTypeExtend";
 import { TasteType } from "../model/TasteType";
 import { addTaste, imageListUpload } from "./taste";
 import { ErrorNotify, SuccessNotify } from "../components/Alert/Alert";
-import { SaunterType } from "../model/SaunterType";
 import { TourType } from "../model/TourType";
 import { addTour } from "./tour";
 import { FileUploadType } from "../components/Editor/Editor";
@@ -51,7 +50,7 @@ export const ApiConnector = (
       break;
 
     case "saunter":
-      newData = {} as SaunterType;
+      console.log(data);
       break;
 
     case "tour":
