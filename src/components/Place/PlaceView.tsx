@@ -26,9 +26,7 @@ export function PlaceView(props: {
 
   // @ts-ignore
   const API_KEY = import.meta.env.VITE_GOOGLE_MAP_KEY_DATA;
-  const startPoint = wayPoint?.find(
-    (wayPoint) => wayPoint.waypointType === "start",
-  );
+  const startPoint = wayPoint?.find((wayPoint) => wayPoint.type === "start");
 
   return (
     <div
@@ -87,13 +85,13 @@ function Directions(props: {
   useEffect(() => {
     if (!directionsService || !directionsRenderer || !wayPoint) return;
     const startCoordinate: WaypointType = wayPoint.find(
-      (wayPoint) => wayPoint.waypointType === "start",
+      (wayPoint) => wayPoint.type === "start",
     )!;
     const stopCoordinate: WaypointType[] = wayPoint
-      .filter((wayPoint) => wayPoint.waypointType === "stop")
+      .filter((wayPoint) => wayPoint.type === "stop")
       .sort((a, b) => a.orderIndex - b.orderIndex)!;
     const endCoordinate: WaypointType = wayPoint.find(
-      (wayPoint) => wayPoint.waypointType === "end",
+      (wayPoint) => wayPoint.type === "end",
     )!;
 
     const tryTravelModes = async (

@@ -12,6 +12,7 @@ import { TasteType } from "../../model/TasteType";
 import theme from "../../styles/theme";
 import { TourType } from "../../model/TourType";
 import React, { ReactNode } from "react";
+import { SaunterType } from "../../model/SaunterType";
 
 export function ImageCarousel(props: {
   type: PostingType["type"];
@@ -55,7 +56,8 @@ export function ImageCarousel(props: {
       case "taste":
         return imageRender((data as TasteType).imageUrls!);
       case "saunter":
-        return mediaRender();
+        // return mediaRender();
+        return imageRender((data as SaunterType).mediaUrls!);
       case "tour":
         return imageRender((data as TourType).imageUrls!);
       default:

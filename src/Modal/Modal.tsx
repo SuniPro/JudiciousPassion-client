@@ -43,6 +43,9 @@ export const PlaceModal = React.forwardRef(
     props: {
       onClose: () => void;
       setLocation?: React.Dispatch<React.SetStateAction<LocationType>>;
+      setTravelModeState?: React.Dispatch<
+        React.SetStateAction<google.maps.TravelMode>
+      >;
       lat?: number;
       lng?: number;
       size?: { width: number; height: number };
@@ -62,6 +65,7 @@ export const PlaceModal = React.forwardRef(
       type = "editor",
       wayPoint,
       travelMode,
+      setTravelModeState,
     } = props;
 
     return (
@@ -352,14 +356,14 @@ export const SaunterWaypointInsertModal = React.forwardRef(
         placeName: startPoint.placeName,
         latitude: startPoint.latitude,
         longitude: startPoint.longitude,
-        waypointType: "start",
+        type: "start",
       };
       const stops: LocationWayPointType[] = stopPoint.map((point, index) => ({
         orderIndex: index + 1,
         placeName: point.placeName,
         latitude: point.latitude,
         longitude: point.longitude,
-        waypointType: "stop",
+        type: "stop",
       }));
 
       const end: LocationWayPointType = {
@@ -367,7 +371,7 @@ export const SaunterWaypointInsertModal = React.forwardRef(
         placeName: endPoint.placeName,
         latitude: endPoint.latitude,
         longitude: endPoint.longitude,
-        waypointType: "end",
+        type: "end",
       };
 
       setWaypoint([start, ...stops, end]);
@@ -393,20 +397,15 @@ export const SaunterWaypointInsertModal = React.forwardRef(
         {waypoint.length >= 2 && (
           <PlaceView
             size={size}
-            lng={
-              waypoint.find((route) => route.waypointType === "start")
-                ?.longitude
-            }
-            lat={
-              waypoint.find((route) => route.waypointType === "start")?.latitude
-            }
+            lng={waypoint.find((route) => route.type === "start")?.longitude}
+            lat={waypoint.find((route) => route.type === "start")?.latitude}
             wayPoint={waypoint.map((point, index) => ({
               id: parseInt(uid()),
               saunterId: 1,
               latitude: point.latitude,
               longitude: point.longitude,
               orderIndex: index,
-              waypointType: point.waypointType,
+              type: point.type,
             }))}
             travelMode={"WALKING" as google.maps.TravelMode}
           />

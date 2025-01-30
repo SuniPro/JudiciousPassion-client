@@ -10,9 +10,9 @@ export interface SaunterType {
   insertId: string;
   updateDate?: string;
   updateId?: string;
-  waypoints: WaypointType[];
   mediaUrls?: string[] | null;
   youtubeLink?: string | null;
+  waypoints: WaypointType[];
 }
 
 type TravelModeType = google.maps.TravelMode;
@@ -23,5 +23,5 @@ export interface WaypointType {
   latitude: number;
   longitude: number;
   orderIndex: number;
-  waypointType: "start" | "stop" | "end";
+  type: "start" | "stop" | "end";
 }
