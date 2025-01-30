@@ -5,6 +5,7 @@ import {
   EllipsisCase,
   MainFunctionContainer,
   PalletCircle,
+  SkeletonContentBox,
 } from "../components/Layouts/Layouts";
 import {
   useProportionHook,
@@ -40,6 +41,9 @@ import {
   WalkIcon,
 } from "../components/FeatherIcon/Icons";
 import { YoutubePlayer } from "../components/Youtube/Youtube";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useBodyScrollBottomOver } from "../hooks/useWheel";
+import { getSaunterList } from "../api/saunter";
 
 const SAUNTER_DUMMY: SaunterType[] = [
   {
@@ -57,7 +61,7 @@ const SAUNTER_DUMMY: SaunterType[] = [
       {
         id: 1,
         saunterId: 1,
-        waypointType: "start",
+        type: "start",
         latitude: 37.5288539,
         longitude: 126.9640447,
         orderIndex: 1,
@@ -65,7 +69,7 @@ const SAUNTER_DUMMY: SaunterType[] = [
       {
         id: 3,
         saunterId: 1,
-        waypointType: "end",
+        type: "end",
         latitude: 37.6479302,
         longitude: 127.0339708,
         orderIndex: 3,
@@ -75,14 +79,37 @@ const SAUNTER_DUMMY: SaunterType[] = [
 ];
 
 export function Saunter() {
-  // useBodyScrollBottomOver(fetchNextPage, isFetchingNextPage);
+  const { data, fetchNextPage, isFetchingNextPage, isFetching } =
+    useInfiniteQuery({
+      queryKey: ["saunter"], // 캐싱 키
+      queryFn: getSaunterList, // 데이터 요청 함수
+      getNextPageParam: (lastPage, allPages) =>
+        lastPage.length < 5 ? null : allPages.length, // 다음 페이지 번호
+      initialPageParam: 0,
+    });
+
+  useBodyScrollBottomOver(fetchNextPage, isFetchingNextPage);
+
+  if (!data) return;
+
+  if (isFetching) {
+    return <SkeletonContentBox />;
+  }
 
   return (
-    <MainFunctionContainer>
-      {SAUNTER_DUMMY.map((saunter, index) => (
-        <SaunterContentBox fold={false} saunter={saunter} key={index} />
-      ))}
-    </MainFunctionContainer>
+    <>
+      <MainFunctionContainer>
+        {data.pages.map((page, index) => (
+          <React.Fragment key={index}>
+            {page.map((saunter, index) => (
+              <React.Fragment key={index}>
+                <SaunterContentBox fold={false} saunter={saunter} />
+              </React.Fragment>
+            ))}
+          </React.Fragment>
+        ))}
+      </MainFunctionContainer>
+    </>
   );
 }
 
@@ -261,11 +288,11 @@ export function SaunterContentBox(props: {
           <PlaceModal
             onClose={() => setPlaceModalOpen(false)}
             lat={
-              saunter.waypoints.find((route) => route.waypointType === "start")
+              saunter.waypoints.find((route) => route.type === "start")
                 ?.latitude
             }
             lng={
-              saunter.waypoints.find((route) => route.waypointType === "start")
+              saunter.waypoints.find((route) => route.type === "start")
                 ?.longitude
             }
             size={mediaSize.size}

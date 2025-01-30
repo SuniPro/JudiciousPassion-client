@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { forwardRef, useEffect, useState } from "react";
+import React, { forwardRef, useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "react-color-palette/css";
@@ -97,11 +97,8 @@ export function Editor(props: {
     latitude: 37.314694,
     longitude: 126.575308,
   });
-  const [waypoint, setWaypoint] = useState<LocationWayPointType[]>([]);
-  const startPoint = waypoint.find((point) => point.waypointType === "start");
-  useEffect(() => {
-    console.log(waypoint);
-  }, [waypoint]);
+  const [waypoints, setWaypoints] = useState<LocationWayPointType[]>([]);
+  const startPoint = waypoints.find((point) => point.type === "start");
 
   const [youtubeLink, setYouTubeLink] = useState("");
 
@@ -135,19 +132,24 @@ export function Editor(props: {
     if (title.length <= 0) {
       ErrorNotify("제목을 입력해주세요.");
       return;
-    } else if (waypoint.length < 2) {
+    } else if (waypoints.length < 2) {
       ErrorNotify("출발지와 목적지를 입력하세요.");
       return;
     }
-    ApiConnector(type, {
-      contents,
-      title,
-      location,
-      imageUrl: selectedFile,
-      personalColor: color.hex,
-      insertId: user?.username,
-      youtubeLink: youtubeLink,
-    });
+    ApiConnector(
+      type,
+      {
+        contents,
+        title,
+        location,
+        selectedFile,
+        personalColor: color.hex,
+        insertId: user?.username,
+        youtubeLink: youtubeLink,
+        waypoints,
+      },
+      onClose,
+    );
   };
 
   return (
@@ -330,7 +332,7 @@ export function Editor(props: {
               setOpen(true);
             }}
             css={css`
-              color: ${waypoint.length === 0
+              color: ${waypoints.length === 0
                 ? theme.colors.secondary
                 : color.hex === theme.colors.black
                   ? theme.islandBlueTheme.activeBackgroundColor
@@ -437,7 +439,10 @@ export function Editor(props: {
               <SaunterWaypointInsertModal
                 size={waypointModalExtent.size}
                 onClose={() => setOpen(false)}
-                waypointState={{ waypoint, setWaypoint }}
+                waypointState={{
+                  waypoint: waypoints,
+                  setWaypoint: setWaypoints,
+                }}
                 css={css`
                   height: auto;
                 `}
