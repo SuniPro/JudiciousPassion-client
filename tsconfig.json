@@ -18,7 +18,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "jsx": "react-jsx", // React 17+ JSX 변환
-    "allowImportingTsExtensions": true, // TS 확장자 허용
+    "allowImportingTsExtensions": false, // TS 확장자 허용
     "isolatedModules": true // 각 파일 개별 처리
   },
   "include": ["src"], // 프로젝트 소스 디렉토리
