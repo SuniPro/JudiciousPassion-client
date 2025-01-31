@@ -4,13 +4,14 @@ import {
   EllipsisCase,
   MainFunctionContainer,
   PalletCircle,
+  SkeletonContentBox,
 } from "../components/Layouts/Layouts";
 import { css } from "@emotion/react";
 import { ProfileImage } from "../components/profile/Profile";
 import theme from "../styles/theme";
 import { TasteType } from "../model/TasteType";
 import { LikeButton } from "../components/Relation/Rate";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getTasteList } from "../api/taste";
 import { useBodyScrollBottomOver } from "../hooks/useWheel";
@@ -37,34 +38,49 @@ import {
 } from "../hooks/useWindowHook";
 
 export function Taste() {
-  const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["taste"], // 캐싱 키
-    queryFn: getTasteList, // 데이터 요청 함수
-    getNextPageParam: (lastPage, allPages) =>
-      lastPage.length < 5 ? null : allPages.length, // 다음 페이지 번호
-    initialPageParam: 0,
-  });
+  const { data, fetchNextPage, isFetchingNextPage, isFetched, isFetching } =
+    useInfiniteQuery({
+      queryKey: ["taste"], // 캐싱 키
+      queryFn: getTasteList, // 데이터 요청 함수
+      getNextPageParam: (lastPage, allPages) =>
+        lastPage.length < 5 ? null : allPages.length, // 다음 페이지 번호
+      initialPageParam: 0,
+    });
 
   useBodyScrollBottomOver(fetchNextPage, isFetchingNextPage);
 
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (isFetched) {
+      setTimeout(() => setVisible(true), 100); // 100ms 딜레이 후 서서히 등장
+    }
+  }, [isFetched]);
+
+  const memoizedTasteList = useMemo(
+    () =>
+      data?.pages.map((page, index) => (
+        <React.Fragment key={index}>
+          {page.map((taste, index) => (
+            <React.Fragment key={index}>
+              <TasteContentBox fold={false} taste={taste} />
+            </React.Fragment>
+          ))}
+        </React.Fragment>
+      )),
+    [data],
+  );
+
   if (!data) return;
 
-  if (data.pages.length === 0) {
+  if (isFetching) {
     return <SkeletonContentBox />;
   }
 
   return (
     <>
-      <MainFunctionContainer>
-        {data.pages.map((page, index) => (
-          <React.Fragment key={index}>
-            {page.map((taste, index) => (
-              <React.Fragment key={index}>
-                <TasteContentBox fold={false} taste={taste} />
-              </React.Fragment>
-            ))}
-          </React.Fragment>
-        ))}
+      <MainFunctionContainer visible={visible}>
+        {memoizedTasteList}
       </MainFunctionContainer>
     </>
   );
@@ -79,7 +95,7 @@ export function TasteContentBox(props: {
   const { windowWidth } = useWindowContext();
 
   const { size } = useProportionHook(windowWidth, 280, 630);
-  const mapSize = useProportionSizeHook(windowWidth, 600, 600, 630);
+  const mapSize = useProportionSizeHook(windowWidth, 620, 500, 630);
 
   const [placeModalOpen, setPlaceModalOpen] = useState(false);
   const [personalColorModalOpen, setPersonalColorModalOpen] = useState(false);
@@ -206,8 +222,4 @@ export function TasteContentBox(props: {
       </Modal>
     </DefaultContentBoxWrapper>
   );
-}
-
-function SkeletonContentBox() {
-  return <DefaultContentBoxWrapper></DefaultContentBoxWrapper>;
 }

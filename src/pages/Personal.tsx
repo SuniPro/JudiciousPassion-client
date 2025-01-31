@@ -259,6 +259,7 @@ export function Personal() {
         css={css`
           margin-top: 1rem;
         `}
+        visible={true}
       >
         <FeedCarousel>
           <>

@@ -2,7 +2,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useBodyScrollBottomOver } from "../hooks/useWheel";
 import { css } from "@emotion/react";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ProfileImage } from "../components/profile/Profile";
 import theme from "../styles/theme";
 import { Modal, Tooltip } from "@mui/material";
@@ -11,6 +11,7 @@ import {
   EllipsisCase,
   MainFunctionContainer,
   PalletCircle,
+  SkeletonContentBox,
 } from "../components/Layouts/Layouts";
 import { iso8601ToYYMMDDHHMM } from "../components/Date/DateFormatter";
 import { ImageCarousel } from "../components/Carousel/ImageCarousel";
@@ -37,34 +38,47 @@ import {
 } from "../hooks/useWindowHook";
 
 export function Tour() {
-  const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ["tour"], // 캐싱 키
-    queryFn: getTourList, // 데이터 요청 함수
-    getNextPageParam: (lastPage, allPages) =>
-      lastPage.length < 5 ? null : allPages.length, // 다음 페이지 번호
-    initialPageParam: 0,
-  });
+  const { data, fetchNextPage, isFetchingNextPage, isFetched, isFetching } =
+    useInfiniteQuery({
+      queryKey: ["tour"], // 캐싱 키
+      queryFn: getTourList, // 데이터 요청 함수
+      getNextPageParam: (lastPage, allPages) =>
+        lastPage.length < 5 ? null : allPages.length, // 다음 페이지 번호
+      initialPageParam: 0,
+    });
 
   useBodyScrollBottomOver(fetchNextPage, isFetchingNextPage);
 
-  if (!data) return;
+  const [visible, setVisible] = useState(false);
 
-  if (data.pages.length === 0) {
+  useEffect(() => {
+    if (isFetched) {
+      setTimeout(() => setVisible(true), 100); // 100ms 딜레이 후 서서히 등장
+    }
+  }, [isFetched]);
+
+  const memoizedTourList = useMemo(
+    () =>
+      data?.pages.map((page, index) => (
+        <React.Fragment key={index}>
+          {page.map((tour, index) => (
+            <React.Fragment key={index}>
+              <TourContentBox fold={false} tour={tour} />
+            </React.Fragment>
+          ))}
+        </React.Fragment>
+      )),
+    [data],
+  );
+
+  if (isFetching) {
     return <SkeletonContentBox />;
   }
 
   return (
     <>
-      <MainFunctionContainer>
-        {data.pages.map((page, index) => (
-          <React.Fragment key={index}>
-            {page.map((tour, index) => (
-              <React.Fragment key={index}>
-                <TourContentBox fold={false} tour={tour} />
-              </React.Fragment>
-            ))}
-          </React.Fragment>
-        ))}
+      <MainFunctionContainer visible={visible}>
+        {memoizedTourList}
       </MainFunctionContainer>
     </>
   );
@@ -79,7 +93,7 @@ export function TourContentBox(props: {
   const { windowWidth } = useWindowContext();
 
   const { size } = useProportionHook(windowWidth, 180, 630);
-  const mapSize = useProportionSizeHook(windowWidth, 600, 600, 630);
+  const mapSize = useProportionSizeHook(windowWidth, 620, 500, 630);
 
   const [placeModalOpen, setPlaceModalOpen] = useState(false);
   const [personalColorModalOpen, setPersonalColorModalOpen] = useState(false);
@@ -206,8 +220,4 @@ export function TourContentBox(props: {
       </Modal>
     </DefaultContentBoxWrapper>
   );
-}
-
-function SkeletonContentBox() {
-  return <DefaultContentBoxWrapper></DefaultContentBoxWrapper>;
 }

@@ -2,7 +2,6 @@ export interface TasteType {
   id?: number;
   placeName: string;
   title: string;
-  description: string;
   contents: string;
   latitude: number;
   longitude: number;

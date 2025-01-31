@@ -12,7 +12,7 @@ import {
   useProportionSizeHook,
 } from "../hooks/useWindowHook";
 import { useWindowContext } from "../context/WindowContext";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useContentsFunction } from "../hooks/useContents";
 import {
   Contents,
@@ -45,41 +45,8 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useBodyScrollBottomOver } from "../hooks/useWheel";
 import { getSaunterList } from "../api/saunter";
 
-const SAUNTER_DUMMY: SaunterType[] = [
-  {
-    id: 1,
-    placeName: "서울시 용산구 용산역",
-    title: "test",
-    travelMode: "TRANSIT",
-    contents: `<p>테스트</p>`,
-    personalColor: "#6095C9",
-    rate: 5,
-    insertDate: "2025-01-05T20:37:27.185327",
-    insertId: "suni",
-    youtubeLink: "https://www.youtube.com/watch?v=ibUMoCua8RA",
-    waypoints: [
-      {
-        id: 1,
-        saunterId: 1,
-        type: "start",
-        latitude: 37.5288539,
-        longitude: 126.9640447,
-        orderIndex: 1,
-      },
-      {
-        id: 3,
-        saunterId: 1,
-        type: "end",
-        latitude: 37.6479302,
-        longitude: 127.0339708,
-        orderIndex: 3,
-      },
-    ],
-  },
-];
-
 export function Saunter() {
-  const { data, fetchNextPage, isFetchingNextPage, isFetching } =
+  const { data, fetchNextPage, isFetchingNextPage, isFetched, isFetching } =
     useInfiniteQuery({
       queryKey: ["saunter"], // 캐싱 키
       queryFn: getSaunterList, // 데이터 요청 함수
@@ -90,6 +57,28 @@ export function Saunter() {
 
   useBodyScrollBottomOver(fetchNextPage, isFetchingNextPage);
 
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    if (isFetched) {
+      setTimeout(() => setVisible(true), 100); // 100ms 딜레이 후 서서히 등장
+    }
+  }, [isFetched]);
+
+  const memoizedSaunterList = useMemo(
+    () =>
+      data?.pages.map((page, index) => (
+        <React.Fragment key={index}>
+          {page.map((saunter, index) => (
+            <React.Fragment key={index}>
+              <SaunterContentBox fold={false} saunter={saunter} />
+            </React.Fragment>
+          ))}
+        </React.Fragment>
+      )),
+    [data],
+  );
+
   if (!data) return;
 
   if (isFetching) {
@@ -98,16 +87,8 @@ export function Saunter() {
 
   return (
     <>
-      <MainFunctionContainer>
-        {data.pages.map((page, index) => (
-          <React.Fragment key={index}>
-            {page.map((saunter, index) => (
-              <React.Fragment key={index}>
-                <SaunterContentBox fold={false} saunter={saunter} />
-              </React.Fragment>
-            ))}
-          </React.Fragment>
-        ))}
+      <MainFunctionContainer visible={visible}>
+        {memoizedSaunterList}
       </MainFunctionContainer>
     </>
   );

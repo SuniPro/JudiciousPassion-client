@@ -9,5 +9,6 @@ export interface LocationWayPointType {
   placeName: string;
   latitude: number;
   longitude: number;
-  waypointType: "start" | "stop" | "end";
+  type: "start" | "stop" | "end";
+  travelMode?: google.maps.TravelMode | null;
 }

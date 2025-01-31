@@ -1,7 +1,7 @@
 import toast from "react-hot-toast";
 
-export function SuccessNotify(text: string) {
-  toast.success("Successfully toasted!");
+export function SuccessNotify(text?: string) {
+  toast.success(text ? text : "Success");
 }
 
 export function ErrorNotify(text: string) {

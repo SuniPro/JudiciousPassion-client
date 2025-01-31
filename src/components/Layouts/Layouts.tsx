@@ -2,6 +2,14 @@ import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import theme from "../../styles/theme";
 import React from "react";
+import {
+  ContentsDescription,
+  ProfileDescription,
+  ProfileLine,
+  TitleLine,
+  UserLine,
+} from "./Feed";
+import { ProfileImage } from "../profile/Profile";
 
 export interface ExtentType {
   width?: number;
@@ -33,12 +41,12 @@ export const Container = styled.div`
 `;
 
 /** 구분선을 출력합니다. width 값은 %로 계산됩니다. */
-export const Divider = styled.p<{ width?: number }>(
-  ({ width = 100 }) => css`
-    border-top: 1px solid ${theme.colors.secondary};
-    width: ${width}%;
-  `,
-);
+// export const Divider = styled.p<{ width?: number }>(
+//   ({ width = 100 }) => css`
+//     border-top: 1px solid ${theme.colors.secondary};
+//     width: ${width}%;
+//   `,
+// );
 
 export const ContentsAreaContainer = styled.div`
   width: 100%;
@@ -52,12 +60,20 @@ export const ContentsAreaContainer = styled.div`
 /**
  * Taste, Saunter, Tour 에서 사용하기 위한 MainContainer 입니다.
  * DefaultContentBoxWrapper 의 부모요소입니다.*/
-export const MainFunctionContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-`;
+export const MainFunctionContainer = styled.div<{ visible: boolean }>(
+  ({ visible }) => css`
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 100%;
+
+      opacity: ${visible ? 1 : 0};
+      transform: translateY(${visible ? "0" : "10px"});
+      transition: opacity 0.8s ease-in-out,
+      transform 0.8s ease-in-out;
+  }
+  `,
+);
 
 /**
  * Taste, Saunter, Tour 에서 사용하기 위한 DefaultContentBoxWrapper 입니다.
@@ -79,6 +95,52 @@ export const DefaultContentBoxWrapper = styled.section<{}>(
     @media ${theme.windowSize.small} {
       border-radius: 0;
       margin-bottom: -1px;
+    }
+  `,
+);
+
+export function SkeletonContentBox() {
+  return (
+    <DefaultContentBoxWrapper>
+      <ProfileLine>
+        <UserLine>
+          <ProfileImage name="suni" />
+          <ProfileDescription>
+            <SkeletonPlaceholder
+              color={theme.colors.black}
+              width={150}
+            ></SkeletonPlaceholder>
+          </ProfileDescription>
+        </UserLine>
+        <ContentsDescription>
+          <PalletCircle backgroundColor={theme.colors.black} />
+        </ContentsDescription>
+      </ProfileLine>
+      <TitleLine>
+        <SkeletonPlaceholder width={300}></SkeletonPlaceholder>
+      </TitleLine>
+    </DefaultContentBoxWrapper>
+  );
+}
+
+const SkeletonPlaceholder = styled.span<{ width: number }>(
+  ({ width }) => css`
+    background: linear-gradient(90deg, #e8e8e8 0px, #f8f8f8 40px, #e8e8e8 80px);
+    background-size: 350px;
+    width: ${width}px;
+    height: 1.45rem;
+    border-radius: 3px;
+    margin-top: 1.5rem;
+    animation: animation 1.5s infinite;
+
+    @keyframes animation {
+      0% {
+        background-position: -100px;
+      }
+      40%,
+      100% {
+        background-position: 270px;
+      }
     }
   `,
 );
@@ -148,9 +210,9 @@ export function ModalHeader(props: {
   } = props;
   return (
     <ModalHeaderContainer>
-      <span onClick={leftFunc}>{leftMenu}</span>
-      <span>{purpose}</span>
-      <span onClick={rightFunc}>{rightMenu}</span>
+      <Function onClick={leftFunc}>{leftMenu}</Function>
+      <Title>{purpose}</Title>
+      <Function onClick={rightFunc}>{rightMenu}</Function>
     </ModalHeaderContainer>
   );
 }
@@ -165,8 +227,12 @@ export const ModalHeaderContainer = styled.div`
   padding: 10px 20px;
   border-bottom: 1px solid ${theme.colors.secondary};
   box-sizing: border-box;
+`;
 
-  span {
-    cursor: pointer;
-  }
+const Title = styled.span`
+  font-weight: bold;
+`;
+
+const Function = styled.span`
+  cursor: pointer;
 `;
