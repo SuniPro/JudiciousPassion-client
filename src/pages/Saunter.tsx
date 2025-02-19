@@ -101,8 +101,17 @@ export function SaunterContentBox(props: {
 }) {
   const { saunter, fold, className } = props;
   const { windowWidth } = useWindowContext();
-  const { size } = useProportionHook(windowWidth, 180, 630);
-  const mediaSize = useProportionSizeHook(windowWidth, 630, 500, 630);
+  const { size } = useProportionHook(
+    windowWidth,
+    180,
+    theme.mainFrameSize.defaultWidth,
+  );
+  const mediaSize = useProportionSizeHook(
+    windowWidth,
+    theme.mainFrameSize.defaultWidth,
+    500,
+    theme.mainFrameSize.defaultWidth,
+  );
 
   const [placeModalOpen, setPlaceModalOpen] = useState(false);
   const [personalColorModalOpen, setPersonalColorModalOpen] = useState(false);
@@ -202,7 +211,7 @@ export function SaunterContentBox(props: {
             <div
               css={css`
                 width: ${mediaSize.size.width}px;
-                max-width: 630px;
+                max-width: ${theme.mainFrameSize.defaultWidth}px;
                 height: ${mediaSize.size.height}px;
                 display: flex;
                 flex-direction: column;

@@ -17,9 +17,9 @@ export interface ExtentType {
 }
 
 export const PageContainer = styled.div<{ width: number }>(
-  ({ width = 630 }) => css`
+  ({ width = theme.mainFrameSize.defaultWidth }) => css`
     width: ${width}px;
-    max-width: 630px;
+    max-width: ${theme.mainFrameSize.defaultWidth}px;
     display: flex;
     flex-direction: column;
     justify-items: flex-start;
@@ -84,7 +84,7 @@ export const DefaultContentBoxWrapper = styled.section<{}>(
     transition: all 200ms linear;
 
     width: 100%;
-    border: 1px solid ${theme.islandBlueTheme.secondary};
+    border: 1px solid ${theme.defaultTheme.secondary};
     border-radius: ${theme.borderRadius.roundedBox};
 
     display: flex;

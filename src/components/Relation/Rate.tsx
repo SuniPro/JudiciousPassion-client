@@ -211,7 +211,7 @@ export function LikeButton(props: {
             ? "#DD2E44"
             : count !== 0
               ? ""
-              : `${theme.islandBlueTheme.gray}`
+              : `${theme.defaultTheme.gray}`
         }
       />
       <LabelClipper className="labelClipper">

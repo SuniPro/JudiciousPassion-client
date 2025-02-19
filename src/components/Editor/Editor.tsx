@@ -29,6 +29,8 @@ import { CircleButton } from "../Layouts/Button";
 import { ProfileImage } from "../profile/Profile";
 import { useContentIconHook } from "../../hooks/useContents";
 import { YoutubePlayer } from "../Youtube/Youtube";
+import { IslandBlueSpinner } from "../Empty/IslandBlueSpinner";
+import { SignForm } from "../Sign/Sign";
 
 export interface FileUploadType {
   id: number;
@@ -43,38 +45,23 @@ export interface SelectedFileStateType {
 
 const IMAGE_UPLOAD_LIMIT = 8;
 
-const myColors = [
-  "purple",
-  "#785412",
-  "#452632",
-  "#856325",
-  "#963254",
-  "#254563",
-  "white",
-];
-const modules = {
+const MODULES = {
   toolbar: [
     [{ header: [1, 2, 3, 4, 5, 6, false] }],
     ["bold", "italic", "underline"],
     [{ list: "ordered" }, { list: "bullet" }],
     [{ color: Object.values(theme.colors) }],
-    [{ background: myColors }],
   ],
 };
 
-const formats = [
+const FORMATS = [
   "header",
   "bold",
   "italic",
   "underline",
-  "strike",
-  "blockquote",
   "list",
   "bullet",
-  "link",
   "color",
-  "background",
-  "align",
 ];
 
 export function Editor(props: {
@@ -102,14 +89,35 @@ export function Editor(props: {
 
   const [youtubeLink, setYouTubeLink] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const [open, setOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [youtubeModalOpen, setYoutubeModalOOpen] = useState(false);
 
-  const { size } = useProportionHook(windowWidth, 600, 630);
-  const placeModalExtent = useProportionSizeHook(windowWidth, 600, 600, 630);
-  const waypointModalExtent = useProportionSizeHook(windowWidth, 400, 400, 630);
-  const youtubeModalExtent = useProportionSizeHook(windowWidth, 400, 300, 630);
+  const { size } = useProportionHook(
+    windowWidth,
+    600,
+    theme.mainFrameSize.defaultWidth,
+  );
+  const placeModalExtent = useProportionSizeHook(
+    windowWidth,
+    600,
+    600,
+    theme.mainFrameSize.defaultWidth,
+  );
+  const waypointModalExtent = useProportionSizeHook(
+    windowWidth,
+    400,
+    400,
+    theme.mainFrameSize.defaultWidth,
+  );
+  const youtubeModalExtent = useProportionSizeHook(
+    windowWidth,
+    400,
+    300,
+    theme.mainFrameSize.defaultWidth,
+  );
 
   const handleProcedureContentChange = (content: any) => {
     setContents(content);
@@ -129,28 +137,37 @@ export function Editor(props: {
   };
 
   const eventHandler = () => {
+    setLoading(true);
     if (title.length <= 0) {
       ErrorNotify("제목을 입력해주세요.");
       return;
-    } else if (waypoints.length < 2) {
-      ErrorNotify("출발지와 목적지를 입력하세요.");
-      return;
     }
-    ApiConnector(
-      type,
-      {
-        contents,
-        title,
-        location,
-        selectedFile,
-        personalColor: color.hex,
-        insertId: user?.username,
-        youtubeLink: youtubeLink,
-        waypoints,
-      },
-      onClose,
-    );
+    ApiConnector(type, {
+      contents,
+      title,
+      location,
+      selectedFile,
+      personalColor: color.hex,
+      insertId: user ? user.username : "suni",
+      youtubeLink: youtubeLink,
+      waypoints,
+    });
+    setLoading(false);
+    onClose();
   };
+
+  if (loading) {
+    return (
+      <StyledModalBox
+        width={size}
+        css={css`
+          background: none;
+        `}
+      >
+        <IslandBlueSpinner />
+      </StyledModalBox>
+    );
+  }
 
   return (
     <StyledModalBox
@@ -158,7 +175,7 @@ export function Editor(props: {
       css={css`
         width: ${size}px;
         height: auto;
-        border: 1px solid ${theme.islandBlueTheme.secondary};
+        border: 1px solid ${theme.defaultTheme.secondary};
         border-radius: ${theme.borderRadius.roundedBox};
 
         .ql-toolbar.ql-snow {
@@ -184,7 +201,7 @@ export function Editor(props: {
       <ModalHeader
         leftFunc={onClose}
         purpose="작성"
-        rightMenu="저장"
+        rightMenu="게시"
         rightFunc={eventHandler}
       />
       <section
@@ -219,7 +236,9 @@ export function Editor(props: {
             <StyledInput
               onFocus={() => setOpen(true)}
               width={90}
-              value={startPoint?.placeName}
+              value={
+                type === "saunter" ? startPoint?.placeName : location.placeName
+              }
               type="text"
               readOnly
             />
@@ -304,8 +323,8 @@ export function Editor(props: {
         <section onClick={() => setPaletteOpen(false)}>
           <ReactQuill
             theme="snow"
-            modules={modules}
-            formats={formats}
+            modules={MODULES}
+            formats={FORMATS}
             value={contents}
             onChange={handleProcedureContentChange}
             css={css`
@@ -335,7 +354,7 @@ export function Editor(props: {
               color: ${waypoints.length === 0
                 ? theme.colors.secondary
                 : color.hex === theme.colors.black
-                  ? theme.islandBlueTheme.activeBackgroundColor
+                  ? theme.defaultTheme.activeBackgroundColor
                   : theme.colors.black};
               transition: color 0.5s ease-in-out;
             `}
@@ -361,7 +380,7 @@ export function Editor(props: {
               }}
               reactiveColor={
                 color.hex === theme.colors.black
-                  ? theme.islandBlueTheme.menuAndToggleActiveColor
+                  ? theme.defaultTheme.menuAndToggleActiveColor
                   : color.hex
               }
               disable={youtubeLink.length !== 0}
@@ -379,7 +398,7 @@ export function Editor(props: {
               color: ${youtubeLink.length === 0
                 ? theme.colors.secondary
                 : color.hex === theme.colors.black
-                  ? theme.islandBlueTheme.activeBackgroundColor
+                  ? theme.defaultTheme.activeBackgroundColor
                   : theme.colors.black};
 
               transition: color 0.5s ease-in-out;
@@ -415,21 +434,7 @@ export function Editor(props: {
             )}
           </InfoLine>
         </section>
-        {type !== "saunter" ? (
-          <Modal
-            open={open}
-            onClose={() => setOpen(false)}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-            children={
-              <PlaceModal
-                size={placeModalExtent.size}
-                onClose={() => setOpen(false)}
-                setLocation={setLocation}
-              />
-            }
-          />
-        ) : (
+        {type === "saunter" ? (
           <Modal
             open={open}
             onClose={() => setOpen(false)}
@@ -446,6 +451,21 @@ export function Editor(props: {
                 css={css`
                   height: auto;
                 `}
+              />
+            }
+          />
+        ) : (
+          <Modal
+            open={open}
+            onClose={() => setOpen(false)}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+            children={
+              <PlaceModal
+                size={placeModalExtent.size}
+                onClose={() => setOpen(false)}
+                setLocation={setLocation}
+                type="editor"
               />
             }
           />
@@ -575,7 +595,7 @@ const StyledInput = styled.input<{ width?: number; isView?: boolean }>(
 
     display: ${isView ? "block" : "none"};
 
-    color: ${theme.islandBlueTheme.gray};
+    color: ${theme.defaultTheme.gray};
   `,
 );
 
@@ -610,3 +630,5 @@ export const EditorModal = forwardRef(
     _ref,
   ) => <Editor {...props} />,
 );
+
+export const SignModal = forwardRef(SignForm);

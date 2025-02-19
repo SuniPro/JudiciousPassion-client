@@ -29,7 +29,13 @@ export function SearchGoogle(props: {
 
   useEffect(() => {
     if (selectedPlace?.geometry?.location) {
+      console.log("test", selectedPlace.geometry.location);
       if (!setLocation) return;
+      console.log({
+        placeName: selectedPlace.formatted_address ?? "",
+        longitude: selectedPlace.geometry.location.lng(),
+        latitude: selectedPlace.geometry.location.lat(),
+      });
       setLocation({
         placeName: selectedPlace.formatted_address ?? "",
         longitude: selectedPlace.geometry.location.lng(),

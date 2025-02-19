@@ -8,11 +8,7 @@ import { FileUploadType } from "../components/Editor/Editor";
 import { SaunterType } from "../model/SaunterType";
 import { addSaunter } from "./saunter";
 
-export const ApiConnector = (
-  type: PostingType["type"],
-  data: any,
-  func: () => void,
-) => {
+export const ApiConnector = (type: PostingType["type"], data: any) => {
   let newData;
 
   switch (type) {
@@ -42,9 +38,6 @@ export const ApiConnector = (
           Promise.all(uploadPromises)
             .then(() => {
               SuccessNotify("포스팅 완료 !");
-              setTimeout(() => {
-                func;
-              }, 400);
             })
             .catch(() => ErrorNotify("하나 이상의 업로드에 실패했습니다!"));
         })
@@ -78,9 +71,6 @@ export const ApiConnector = (
           Promise.all(uploadPromises)
             .then(() => {
               SuccessNotify("포스팅 완료 !");
-              setTimeout(() => {
-                func;
-              }, 400);
             })
             .catch(() => ErrorNotify("하나 이상의 업로드에 실패했습니다!"));
         })
@@ -111,13 +101,12 @@ export const ApiConnector = (
           Promise.all(uploadPromises)
             .then(() => {
               SuccessNotify("포스팅 완료 !");
-              setTimeout(() => {
-                func;
-              }, 400);
             })
             .catch(() => ErrorNotify("하나 이상의 업로드에 실패했습니다!"));
         })
         .catch(() => ErrorNotify("데이터 추가 실패!"));
+
+      break;
 
     default:
       console.error("Unknown posting type:", type);

@@ -63,7 +63,7 @@ export const TitleLine = styled.div`
 `;
 
 export const ContentsFold = styled.div`
-  color: ${theme.islandBlueTheme.gray};
+  color: ${theme.defaultTheme.gray};
   cursor: pointer;
   font-weight: bold;
 `;

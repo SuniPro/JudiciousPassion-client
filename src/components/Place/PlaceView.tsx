@@ -1,13 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import React, { useEffect, useState } from "react";
 import {
+  AdvancedMarker,
   APIProvider,
   Map,
+  useAdvancedMarkerRef,
   useMap,
   useMapsLibrary,
 } from "@vis.gl/react-google-maps";
 import { css } from "@emotion/react";
 import { WaypointType } from "../../model/SaunterType";
+import theme from "../../styles/theme";
 
 export function PlaceView(props: {
   size?: { width: number; height: number };
@@ -19,7 +22,7 @@ export function PlaceView(props: {
   const {
     lat = 37.5288539,
     lng = 126.9640447,
-    size = { width: 630, height: 500 },
+    size = { width: theme.mainFrameSize.defaultWidth, height: 500 },
     wayPoint,
     travelMode,
   } = props;
@@ -27,6 +30,12 @@ export function PlaceView(props: {
   // @ts-ignore
   const API_KEY = import.meta.env.VITE_GOOGLE_MAP_KEY_DATA;
   const startPoint = wayPoint?.find((wayPoint) => wayPoint.type === "start");
+  const [markerRef, marker] = useAdvancedMarkerRef();
+
+  useEffect(() => {
+    if (!marker) return;
+    marker.position = { lat, lng };
+  }, [lat, lng, marker]);
 
   return (
     <div
@@ -40,6 +49,7 @@ export function PlaceView(props: {
         solutionChannel="GMP_devsite_samples_v3_rgmautocomplete"
       >
         <Map
+          mapId="bf51a910020fa25a"
           defaultCenter={{
             lat: startPoint ? startPoint.latitude : lat,
             lng: startPoint ? startPoint.longitude : lng,
@@ -48,6 +58,7 @@ export function PlaceView(props: {
           gestureHandling="greedy"
           fullscreenControl={false}
         >
+          <AdvancedMarker ref={markerRef} position={marker?.position} />
           <Directions wayPoint={wayPoint} travelMode={travelMode} />
         </Map>
       </APIProvider>

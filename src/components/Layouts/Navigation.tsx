@@ -145,7 +145,7 @@ const FooterManuList = styled.li<{
       height: ${height + 20}px;
       border-radius: ${theme.borderRadius.roundedBox};
       transition: ${timing} cubic-bezier(1, 0.2, 0.1, 1.2) all;
-      background: ${theme.islandBlueTheme.menuAndToggleActiveColor};
+      background: ${theme.defaultTheme.menuAndToggleActiveColor};
     }
 
     &:hover:before {
@@ -160,7 +160,7 @@ const FooterNavLink = styled.a`
   align-items: center;
   justify-content: center;
   width: 100%;
-  color: ${theme.islandBlueTheme.fontSecondary};
+  color: ${theme.defaultTheme.fontSecondary};
   transition: ${transition};
 
   &:hover {
@@ -256,7 +256,7 @@ const SideManuList = styled.li<{ index: number }>(
       left: ${spacer};
       width: ${linkHeight};
       height: ${linkHeight};
-      background: ${theme.islandBlueTheme.menuAndToggleActiveColor};
+      background: ${theme.defaultTheme.menuAndToggleActiveColor};
       border-radius: calc(${theme.borderRadius.roundedBox} * 1.75);
       transition: ${timing} cubic-bezier(1, 0.2, 0.1, 1.2) all;
 
@@ -276,7 +276,7 @@ const SideNavLink = styled.a`
   justify-content: center;
   height: ${linkHeight};
   width: calc(${spacer} * 5.5);
-  color: ${theme.islandBlueTheme.fontSecondary};
+  color: ${theme.defaultTheme.fontSecondary};
   transition: ${transition};
 
   span {
@@ -286,7 +286,7 @@ const SideNavLink = styled.a`
     margin-left: 1rem;
     opacity: 0;
     pointer-events: none;
-    color: ${theme.islandBlueTheme.menuAndToggleActiveColor};
+    color: ${theme.defaultTheme.menuAndToggleActiveColor};
     background: #fff;
     padding: calc(${spacer} * 0.75);
     border-radius: calc(${theme.borderRadius.roundedBox} * 1.75);

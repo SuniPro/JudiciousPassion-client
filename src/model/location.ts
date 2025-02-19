@@ -12,3 +12,10 @@ export interface LocationWayPointType {
   type: "start" | "stop" | "end";
   travelMode?: google.maps.TravelMode | null;
 }
+
+export interface NowLocationType {
+  id?: number;
+  longitude?: number;
+  latitude?: number;
+  insertId: string;
+}

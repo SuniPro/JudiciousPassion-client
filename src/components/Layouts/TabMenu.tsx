@@ -53,12 +53,12 @@ const TabMenuUnorderedList = styled.ul`
   justify-content: space-between;
   align-items: center;
 
-  background-color: ${theme.islandBlueTheme.defaultBackground};
+  background-color: ${theme.defaultTheme.defaultBackground};
   border-radius: 500px;
   padding: 8px 10px;
   margin: 0;
 
-  color: ${theme.islandBlueTheme.fontColor.buttonDefault};
+  color: ${theme.defaultTheme.fontColor.buttonDefault};
 `;
 
 const TabMenuList = styled.li<{ isActive?: boolean }>(
@@ -73,8 +73,7 @@ const TabMenuList = styled.li<{ isActive?: boolean }>(
     transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1.05);
     cursor: pointer;
     ${isActive &&
-    `background: ${theme.islandBlueTheme.menuAndToggleActiveColor};
-    color: ${theme.islandBlueTheme.fontColor.default};`};
+    `background: ${theme.defaultTheme.menuAndToggleActiveColor};`};
 
     width: 132px;
     height: 35%;
@@ -88,9 +87,6 @@ const TabMenuContent = styled.span<{ isActive?: boolean }>(
     font-size: 20px;
     font-weight: ${isActive ? "700" : "normal"};
     white-space: nowrap;
-    color: ${isActive
-      ? theme.islandBlueTheme.fontColor.buttonDefault
-      : theme.islandBlueTheme.fontColor.default};
     text-align: center;
   `,
 );

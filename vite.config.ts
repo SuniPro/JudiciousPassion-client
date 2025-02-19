@@ -9,8 +9,7 @@ export default defineConfig({
     proxy: {
       // 첫 번째 프록시 설정
       "/api": {
-        target:
-          "http://ec2-3-38-154-253.ap-northeast-2.compute.amazonaws.com:8080",
+        target: "http://localhost:8080",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ""),
         secure: false,

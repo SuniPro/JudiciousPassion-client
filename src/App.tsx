@@ -38,7 +38,7 @@ function App() {
           <div
             css={css`
               body {
-                background-color: ${theme.islandBlueTheme.bodyBackground};
+                background-color: ${theme.defaultTheme.bodyBackground};
               }
               width: ${width}px;
 

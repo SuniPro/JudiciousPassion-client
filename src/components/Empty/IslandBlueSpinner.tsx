@@ -16,7 +16,6 @@ export function IslandBlueSpinner(props: { className?: string }) {
         css={css`
           shape-rendering: auto;
           display: block;
-          background: rgb(255, 255, 255);
         `}
         xmlnsXlink="http://www.w3.org/1999/xlink"
       >

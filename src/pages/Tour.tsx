@@ -92,8 +92,17 @@ export function TourContentBox(props: {
   const { tour, fold, className } = props;
   const { windowWidth } = useWindowContext();
 
-  const { size } = useProportionHook(windowWidth, 180, 630);
-  const mapSize = useProportionSizeHook(windowWidth, 620, 500, 630);
+  const { size } = useProportionHook(
+    windowWidth,
+    180,
+    theme.mainFrameSize.defaultWidth,
+  );
+  const mapSize = useProportionSizeHook(
+    windowWidth,
+    620,
+    500,
+    theme.mainFrameSize.defaultWidth,
+  );
 
   const [placeModalOpen, setPlaceModalOpen] = useState(false);
   const [personalColorModalOpen, setPersonalColorModalOpen] = useState(false);
@@ -155,7 +164,7 @@ export function TourContentBox(props: {
           <div
             css={css`
               width: ${windowWidth}px;
-              max-width: 630px;
+              max-width: ${theme.mainFrameSize.defaultWidth}px;
               display: flex;
               flex-direction: column;
               margin-bottom: 10px;

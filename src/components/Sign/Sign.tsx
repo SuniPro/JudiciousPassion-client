@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import { ErrorNotify, SuccessNotify } from "../Alert/Alert";
 import { IslandBlueSpinner } from "../Empty/IslandBlueSpinner";
 import "@iconscout/unicons/css/line.css";
-import { User } from "../../model/User";
 import { Container } from "../Layouts/Layouts";
 
 export const SIGN_MENU: TabMenuListType[] = [
@@ -24,8 +23,7 @@ interface SignInfoType {
   phoneNumber: string;
 }
 
-export function SignForm(props: { user?: User | null }) {
-  const { user } = props;
+export function SignForm() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [signInfo, setSignInfo] = useState<SignInfoType>({
     email: "",
@@ -338,7 +336,7 @@ const Card = styled.div<{ isBack: boolean }>(
   ({ isBack }) => css`
     width: 100%;
     height: ${isBack ? "550" : "350"}px !important;
-    background-color: ${theme.islandBlueTheme.defaultBackground};
+    background-color: ${theme.defaultTheme.defaultBackground};
     box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
     position: absolute;
     border-radius: 6px;
@@ -370,11 +368,10 @@ const FormStyle = styled.input`
   line-height: 22px;
   letter-spacing: 1px;
   outline: none;
-  color: ${theme.islandBlueTheme.fontColor.default};
-  background-color: ${theme.islandBlueTheme.defaultBackground};
+  background-color: ${theme.defaultTheme.defaultBackground};
   -webkit-transition: all 200ms linear;
   transition: all 200ms linear;
-  border: ${theme.islandBlueTheme.contentBoxBorder} 2px solid;
+  border: ${theme.defaultTheme.contentBoxBorder} 2px solid;
 `;
 
 const StyledSignButton = styled.button`
@@ -398,8 +395,8 @@ const StyledSignButton = styled.button`
   -ms-flex-pack: center;
   text-align: center;
   border: none;
-  background-color: ${theme.islandBlueTheme.menuAndToggleActiveColor};
-  color: ${theme.islandBlueTheme.fontColor.buttonDefault};
+  background-color: ${theme.defaultTheme.menuAndToggleActiveColor};
+  color: ${theme.defaultTheme.fontColor.buttonDefault};
 
   &:hover {
     background-color: ${theme.colors.lightGold};
@@ -427,7 +424,7 @@ const Section = styled.div`
   }
 
   .link:hover {
-    color: ${theme.islandBlueTheme.menuAndToggleActiveColor};
+    color: ${theme.defaultTheme.menuAndToggleActiveColor};
   }
 
   p {
@@ -454,7 +451,7 @@ const Section = styled.div`
     font-size: 24px;
     line-height: 48px;
     text-align: left;
-    color: ${theme.islandBlueTheme.menuAndToggleActiveColor};
+    color: ${theme.defaultTheme.menuAndToggleActiveColor};
     -webkit-transition: all 200ms linear;
     transition: all 200ms linear;
   }

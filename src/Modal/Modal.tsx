@@ -49,7 +49,7 @@ export const PlaceModal = React.forwardRef(
       lat?: number;
       lng?: number;
       size?: { width: number; height: number };
-      type?: "view" | "editor";
+      type: "view" | "editor";
       wayPoint?: WaypointType[];
       travelMode?: "BICYCLING" | "DRIVING" | "TRANSIT" | "WALKING";
     },
@@ -65,7 +65,6 @@ export const PlaceModal = React.forwardRef(
       type = "editor",
       wayPoint,
       travelMode,
-      setTravelModeState,
     } = props;
 
     return (
@@ -95,7 +94,7 @@ export const PlaceModal = React.forwardRef(
 );
 
 export const StyledModalBox = styled(Box)<{ width?: number; height?: number }>(
-  ({ width = 630, height = 500 }) => css`
+  ({ width = theme.mainFrameSize.defaultWidth, height = 500 }) => css`
     position: absolute;
     top: 50%;
     left: 50%;
@@ -106,14 +105,14 @@ export const StyledModalBox = styled(Box)<{ width?: number; height?: number }>(
     flex-direction: column;
     flex-wrap: nowrap;
     align-items: center;
-    background-color: ${theme.islandBlueTheme.defaultBackground};
+    background-color: ${theme.defaultTheme.defaultBackground};
     border-radius: ${theme.borderRadius.roundedBox};
 
     .pac-target-input {
       width: ${width / 2.5}px;
       height: 22px;
       border-radius: ${theme.borderRadius.softBox};
-      border: 1px solid ${theme.islandBlueTheme.gray};
+      border: 1px solid ${theme.defaultTheme.gray};
 
       transform: translateY(40%);
       top: 0;
@@ -203,7 +202,7 @@ export const ProfileMessageChangeModal = React.forwardRef(
             flex-direction: column;
             flex-wrap: nowrap;
             align-items: center;
-            background-color: ${theme.islandBlueTheme.defaultBackground};
+            background-color: ${theme.defaultTheme.defaultBackground};
             border-radius: ${theme.borderRadius.roundedBox};
           `}
         >
@@ -304,7 +303,12 @@ export const SaunterWaypointInsertModal = React.forwardRef(
     const { waypoint, setWaypoint } = props.waypointState;
     const { windowWidth } = useWindowContext();
 
-    const mapExtend = useProportionSizeHook(windowWidth, 600, 600, 630);
+    const mapExtend = useProportionSizeHook(
+      windowWidth,
+      600,
+      600,
+      theme.mainFrameSize.defaultWidth,
+    );
 
     const [open, setOpen] = useState<boolean>(false);
 
@@ -505,9 +509,8 @@ export const SaunterWaypointInsertModal = React.forwardRef(
 const WaypointInput = styled.input`
   width: 90%;
   height: 20px;
-  color: ${theme.islandBlueTheme.fontColor.default};
   border-radius: ${theme.borderRadius.softBox};
-  border: 1px solid ${theme.islandBlueTheme.secondary};
+  border: 1px solid ${theme.defaultTheme.secondary};
 `;
 
 const PlaceArea = styled.div`
@@ -517,7 +520,7 @@ const PlaceArea = styled.div`
   align-items: center;
 
   svg {
-    color: ${theme.islandBlueTheme.gray};
+    color: ${theme.defaultTheme.gray};
   }
 `;
 

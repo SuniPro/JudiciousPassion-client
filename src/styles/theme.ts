@@ -27,6 +27,10 @@ const fontStyle = {
   playfair: "Playfair Display, sans-serif",
 };
 
+const mainFrameSize = {
+  defaultWidth: 640,
+};
+
 const colors = {
   white: "#ffffff",
   black: "#000000",
@@ -57,12 +61,12 @@ const shadowStyle = {
 };
 
 const borderRadius = {
-  circle: "10rem",
+  circle: "50%",
   roundedBox: "14px",
   softBox: "8px",
 };
 
-const islandBlueTheme = {
+const defaultTheme = {
   bodyBackground: colors.brightGray,
   mainMenuActiveBackground: colors.babyBlueToneDown,
   fontPrimary: colors.black,
@@ -94,7 +98,8 @@ export type ColorTypes = typeof colors;
 export type FontTypes = typeof fontStyle;
 export type ShadowStylesTypes = typeof shadowStyle;
 export type BorderRadiusTypes = typeof borderRadius;
-export type IslandBlueThemeType = typeof islandBlueTheme;
+export type DefaultThemeType = typeof defaultTheme;
+export type MainFrameSizeType = typeof mainFrameSize;
 
 const baseTheme = createTheme();
 
@@ -104,9 +109,10 @@ const theme: Theme = {
   fontStyle,
   fontSize,
   colors,
-  islandBlueTheme,
+  defaultTheme,
   shadowStyle,
   borderRadius,
+  mainFrameSize,
 };
 
 export default theme;

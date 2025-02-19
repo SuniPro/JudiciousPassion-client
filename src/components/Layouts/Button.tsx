@@ -58,9 +58,9 @@ const CircleButtonContainer = styled.div<{
 
     border-radius: ${theme.borderRadius.circle};
     background-color: ${isActive
-      ? theme.islandBlueTheme.activeBackgroundColor
-      : theme.islandBlueTheme.nonActiveBackgroundColor};
-    color: ${theme.islandBlueTheme.fontColor.buttonDefault};
+      ? theme.defaultTheme.activeBackgroundColor
+      : theme.defaultTheme.nonActiveBackgroundColor};
+    color: ${theme.defaultTheme.fontColor.buttonDefault};
   `,
 );
 
@@ -83,8 +83,8 @@ const RoundedButtonContainer = styled.div<{
 
     border-radius: ${theme.borderRadius.roundedBox};
     background-color: ${isActive
-      ? theme.islandBlueTheme.activeBackgroundColor
-      : theme.islandBlueTheme.nonActiveBackgroundColor};
-    color: ${theme.islandBlueTheme.fontColor.buttonDefault};
+      ? theme.defaultTheme.activeBackgroundColor
+      : theme.defaultTheme.nonActiveBackgroundColor};
+    color: ${theme.defaultTheme.fontColor.buttonDefault};
   `,
 );

@@ -17,8 +17,8 @@ const StyledToggleInput = styled.input`
 `;
 
 const StyledLabel = styled.label<{ color?: string }>(
-  ({ color = theme.islandBlueTheme.menuAndToggleActiveColor }) => css`
-    background: ${theme.islandBlueTheme.defaultBackground};
+  ({ color = theme.defaultTheme.menuAndToggleActiveColor }) => css`
+    background: ${theme.defaultTheme.defaultBackground};
     border: 2px solid ${theme.colors.whiteGray};
     border-radius: ${theme.borderRadius.circle};
     outline: 0;

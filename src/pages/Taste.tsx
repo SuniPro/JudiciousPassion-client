@@ -53,7 +53,7 @@ export function Taste() {
 
   useEffect(() => {
     if (isFetched) {
-      setTimeout(() => setVisible(true), 100); // 100ms 딜레이 후 서서히 등장
+      setTimeout(() => setVisible(true), 300); // 100ms 딜레이 후 서서히 등장
     }
   }, [isFetched]);
 
@@ -94,8 +94,17 @@ export function TasteContentBox(props: {
   const { taste, fold, className } = props;
   const { windowWidth } = useWindowContext();
 
-  const { size } = useProportionHook(windowWidth, 280, 630);
-  const mapSize = useProportionSizeHook(windowWidth, 620, 500, 630);
+  const { size } = useProportionHook(
+    windowWidth,
+    280,
+    theme.mainFrameSize.defaultWidth,
+  );
+  const mapSize = useProportionSizeHook(
+    windowWidth,
+    620,
+    500,
+    theme.mainFrameSize.defaultWidth,
+  );
 
   const [placeModalOpen, setPlaceModalOpen] = useState(false);
   const [personalColorModalOpen, setPersonalColorModalOpen] = useState(false);
@@ -157,7 +166,7 @@ export function TasteContentBox(props: {
           <div
             css={css`
               width: ${windowWidth}px;
-              max-width: 630px;
+              max-width: ${theme.mainFrameSize.defaultWidth}px;
               display: flex;
               flex-direction: column;
               margin-bottom: 10px;

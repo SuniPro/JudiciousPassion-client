@@ -3,9 +3,10 @@ import { Theme as MuiTheme } from "@mui/material/styles";
 import {
   BorderRadiusTypes,
   ColorTypes,
+  DefaultThemeType,
   FontSizeTypes,
   FontTypes,
-  IslandBlueThemeType,
+  MainFrameSizeType,
   ShadowStylesTypes,
   WindowSizeTypes,
 } from "./theme";
@@ -16,8 +17,9 @@ declare module "@emotion/react" {
     colors: ColorTypes;
     fontStyle: FontTypes;
     fontSize: FontSizeTypes;
-    islandBlueTheme: IslandBlueThemeType;
+    defaultTheme: DefaultThemeType;
     shadowStyle: ShadowStylesTypes;
     borderRadius: BorderRadiusTypes;
+    mainFrameSize: MainFrameSizeType;
   }
 }

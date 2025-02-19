@@ -1,9 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import "react-color-palette/css";
-import { useUserContext } from "../context/UserContext";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
-import { Profile, ProfileImage } from "../components/profile/Profile";
 import theme from "../styles/theme";
 import { ColorPicker, useColor } from "react-color-palette";
 import React, { useEffect, useState } from "react";
@@ -15,15 +13,17 @@ import {
   UserCheckIcon,
   UserPlusIcon,
 } from "../components/FeatherIcon/Icons";
-import { LikeButton } from "../components/Relation/Rate";
 import { Modal, Tooltip } from "@mui/material";
 import { User } from "../model/User";
 import { profilePersonalColorChange } from "../api/user";
 import { ErrorNotify } from "../components/Alert/Alert";
-import { SignForm } from "../components/Sign/Sign";
 import { ProfileMessageChangeModal } from "../Modal/Modal";
 import { useQuery } from "@tanstack/react-query";
-import { getTasteByInsertId, getTourByInsertId } from "../api/personal";
+import {
+  createLocation,
+  getTasteByInsertId,
+  getTourByInsertId,
+} from "../api/personal";
 import { TasteType } from "../model/TasteType";
 import { TasteContentBox } from "./Taste";
 import { MainFunctionContainer } from "../components/Layouts/Layouts";
@@ -36,8 +36,18 @@ import {
   useProportionSizeHook,
 } from "../hooks/useWindowHook";
 import { useContentIconHook } from "../hooks/useContents";
+import { useGeoLocation } from "../hooks/useGeoLocation";
+import { PlaceView } from "../components/Place/PlaceView";
+import Cookies from "js-cookie";
+import { useUserContext } from "../context/UserContext";
+import { Profile, ProfileImage } from "../components/profile/Profile";
+import { LikeButton } from "../components/Relation/Rate";
 
-const USER_CONNECT_FUNC = [SendIcon, UserPlusIcon];
+function setCookie() {
+  Cookies.set("id", "suni", { expires: 100 }); // 7일 동안 유지
+}
+
+const USER_CONNECT_FUNC = [SendIcon, UserPlusIcon, MapPinIcon];
 const USER_CERTIFY_LIST = [
   { icons: EmailIcon, description: "메일 인증 및 가입여부" },
   { icons: PhoneIcon, description: "휴대폰번호 인증" },
@@ -53,9 +63,25 @@ export function Personal() {
   useContentIconHook();
   const { user } = useUserContext();
   const { windowWidth } = useWindowContext();
+  const { location, error } = useGeoLocation();
 
-  const { size } = useProportionHook(windowWidth, 120, 630);
-  const profileModalExtent = useProportionSizeHook(windowWidth, 400, 300, 630);
+  const { size } = useProportionHook(
+    windowWidth,
+    120,
+    theme.mainFrameSize.defaultWidth,
+  );
+  const profileModalExtent = useProportionSizeHook(
+    windowWidth,
+    400,
+    300,
+    theme.mainFrameSize.defaultWidth,
+  );
+  const mapExtent = useProportionSizeHook(
+    windowWidth,
+    600,
+    700,
+    theme.mainFrameSize.defaultWidth,
+  );
 
   const { data: tastes } = useQuery({
     queryKey: ["getTasteByInsertId", user],
@@ -64,7 +90,19 @@ export function Personal() {
 
   const { data: tours } = useQuery({
     queryKey: ["getTourByInsertId", user],
-    queryFn: () => getTourByInsertId(user?.username ?? ""),
+    queryFn: () => getTourByInsertId(user?.username ?? "suni"),
+  });
+
+  const { data: now } = useQuery({
+    queryKey: ["createLocation"],
+    queryFn: () =>
+      createLocation({
+        longitude: location?.longitude,
+        latitude: location?.latitude,
+        insertId: "suni",
+      }),
+    enabled: user?.username === "suni",
+    refetchInterval: 1000,
   });
 
   const [color, setColor] = useColor(theme.colors.secondary);
@@ -86,12 +124,16 @@ export function Personal() {
     );
   }, [color, user, userState]);
 
-  if (!user || !userState) return <SignForm />;
+  if (!user || !userState) return;
 
   const personalColorOpacity = user.personalColor + "CC";
 
   return (
     <Container>
+      {/*<div*/}
+      {/*  dangerouslySetInnerHTML={{ __html: video ?? "" }}*/}
+      {/*  style={{ border: "1px solid #ccc", padding: "10px" }}*/}
+      {/*/>*/}
       <PersonalWrapper>
         <ProfileBox css={css``}>
           <ProfileImage
@@ -137,6 +179,13 @@ export function Personal() {
               >
                 {USER_CONNECT_FUNC.map((Func, index) => (
                   <React.Fragment key={index}>
+                    <label
+                      css={css`
+                        padding: 0;
+                        margin: 0;
+                      `}
+                      onClick={() => {}}
+                    ></label>
                     <Func />
                   </React.Fragment>
                 ))}
@@ -160,7 +209,7 @@ export function Personal() {
                 <ProfileMessage
                   onClick={() => setMessageModalOpen(true)}
                   css={css`
-                    color: ${theme.islandBlueTheme.gray};
+                    color: ${theme.defaultTheme.gray};
                   `}
                 >
                   상태메세지 추가
@@ -237,6 +286,11 @@ export function Personal() {
           </ContentsBox>
         </ProfileDescriptionBox>
       </PersonalWrapper>
+      <PlaceView
+        lat={now?.latitude ?? 0}
+        lng={now?.longitude ?? 0}
+        size={mapExtent.size}
+      />
       <FeedCounter>
         <div>
           <span>Feed : 30</span>
@@ -376,7 +430,7 @@ const ProfileDescriptionBox = styled.div`
 
 const PersonalWrapper = styled.div`
   width: 100%;
-  border: 1px solid ${theme.islandBlueTheme.contentBoxBorder};
+  border: 1px solid ${theme.defaultTheme.contentBoxBorder};
   box-shadow: ${theme.shadowStyle.default};
   border-radius: 15px;
 
@@ -387,7 +441,7 @@ const PersonalWrapper = styled.div`
 `;
 
 const Username = styled.span<{ color?: string }>(
-  ({ color = theme.islandBlueTheme.fontColor.default }) => css`
+  ({ color }) => css`
     color: ${color};
     font-family: ${theme.fontStyle.roboto};
     font-size: 34px;
@@ -428,7 +482,7 @@ const PersonalColorChecker = styled.div<{
   ({ backgroundColor, width }) => css`
     height: 10px;
     width: ${width}px;
-    border: 4px solid ${theme.islandBlueTheme.defaultBackground};
+    border: 4px solid ${theme.defaultTheme.defaultBackground};
     box-shadow: ${theme.shadowStyle.default};
     border-radius: ${theme.borderRadius.roundedBox};
 
@@ -443,7 +497,7 @@ const ProfileMessage = styled.span`
 const FeedCounter = styled.div`
   width: 100%;
   height: 40px;
-  border: 1px solid ${theme.islandBlueTheme.secondary};
+  border: 1px solid ${theme.defaultTheme.secondary};
   border-radius: ${theme.borderRadius.roundedBox};
   box-sizing: border-box;
   margin-top: 1rem;
